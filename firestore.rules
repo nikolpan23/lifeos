@@ -1,0 +1,251 @@
+rules_version = '2';
+
+// LifeOS security rules.
+// Every record lives under users/{uid}. Only the signed-in owner can read or write it,
+// and every write is shape-checked here as well as in the app.
+// Linked ids (categoryId, goalId, taskId, ...) are always resolved inside the owner's
+// own users/{uid} subtree, so a record can never point at another person's data.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function data() {
+      return request.resource.data;
+    }
+    function exactKeys(keys) {
+      return data().keys().hasAll(keys) && data().keys().hasOnly(keys);
+    }
+    function str(v, max) {
+      return v is string && v.size() <= max;
+    }
+    function reqStr(v, max) {
+      return v is string && v.size() > 0 && v.size() <= max;
+    }
+    function isId(v) {
+      return v is string && v.matches('^[A-Za-z0-9_-]{1,128}$');
+    }
+    function optId(v) {
+      return v == null || isId(v);
+    }
+    function isDate(v) {
+      return v is string && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+    function optDate(v) {
+      return v == null || isDate(v);
+    }
+    function isTime(v) {
+      return v is string && v.matches('^([01][0-9]|2[0-3]):[0-5][0-9]$');
+    }
+    function optTime(v) {
+      return v == null || isTime(v);
+    }
+    function isInstant(v) {
+      return v is string && v.size() <= 40
+        && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2}([.][0-9]{1,9})?)?(Z|[+-][0-9]{2}:[0-9]{2})$');
+    }
+    function optInstant(v) {
+      return v == null || isInstant(v);
+    }
+    function intIn(v, lo, hi) {
+      return v is int && v >= lo && v <= hi;
+    }
+    function optIntIn(v, lo, hi) {
+      return v == null || intIn(v, lo, hi);
+    }
+    // id matches the document id, timestamps are valid, createdAt never changes.
+    function baseOk(id) {
+      return data().id == id
+        && isInstant(data().createdAt)
+        && isInstant(data().updatedAt)
+        && (resource == null || data().createdAt == resource.data.createdAt);
+    }
+
+    // ---------- profile ----------
+    function validPlanning(p) {
+      return p is map
+        && p.keys().hasAll(['workStart', 'workEnd', 'wakeTime', 'sleepTime', 'focusBlockMinutes', 'breakMinutes', 'planWithin'])
+        && p.keys().hasOnly(['workStart', 'workEnd', 'wakeTime', 'sleepTime', 'focusBlockMinutes', 'breakMinutes', 'planWithin'])
+        && optTime(p.workStart) && optTime(p.workEnd) && optTime(p.wakeTime) && optTime(p.sleepTime)
+        && intIn(p.focusBlockMinutes, 25, 240)
+        && intIn(p.breakMinutes, 0, 60)
+        && p.planWithin in ['work_hours', 'waking_hours'];
+    }
+    function validProfile() {
+      return exactKeys(['displayName', 'timezone', 'weekStartsOn', 'planning', 'aiConsent', 'onboardedAt', 'createdAt', 'updatedAt'])
+        && reqStr(data().displayName, 60)
+        && reqStr(data().timezone, 64)
+        && data().weekStartsOn in [0, 1, 6]
+        && validPlanning(data().planning)
+        && data().aiConsent is bool
+        && optInstant(data().onboardedAt)
+        && isInstant(data().createdAt)
+        && isInstant(data().updatedAt)
+        && (resource == null || data().createdAt == resource.data.createdAt);
+    }
+
+    // ---------- records ----------
+    function validCategory(id) {
+      return exactKeys(['id', 'name', 'color', 'createdAt', 'updatedAt']) && baseOk(id)
+        && reqStr(data().name, 40)
+        && data().color in ['lavender', 'blue', 'green', 'peach', 'rose', 'yellow'];
+    }
+    function validTask(id) {
+      return exactKeys(['id', 'title', 'notes', 'status', 'priority', 'dueDate', 'dueTime', 'estimateMinutes', 'categoryId', 'goalId', 'completedAt', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && reqStr(data().title, 200)
+        && str(data().notes, 5000)
+        && data().status in ['open', 'done']
+        && data().priority in ['low', 'medium', 'high']
+        && optDate(data().dueDate) && optTime(data().dueTime)
+        && optIntIn(data().estimateMinutes, 5, 960)
+        && optId(data().categoryId) && optId(data().goalId)
+        && optInstant(data().completedAt);
+    }
+    function validHabit(id) {
+      return exactKeys(['id', 'name', 'description', 'categoryId', 'goalId', 'schedule', 'preferredTime', 'durationMinutes', 'status', 'startDate', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && reqStr(data().name, 80)
+        && str(data().description, 500)
+        && optId(data().categoryId) && optId(data().goalId)
+        && data().schedule is map
+        && (data().schedule.type == 'daily'
+            || (data().schedule.type == 'weekdays' && data().schedule.days is list && data().schedule.days.size() >= 1 && data().schedule.days.size() <= 7))
+        && optTime(data().preferredTime)
+        && optIntIn(data().durationMinutes, 1, 600)
+        && data().status in ['active', 'paused', 'archived']
+        && isDate(data().startDate);
+    }
+    function validCompletion(id) {
+      return exactKeys(['id', 'habitId', 'date', 'createdAt', 'updatedAt']) && baseOk(id)
+        && isId(data().habitId) && isDate(data().date);
+    }
+    function validGoal(id) {
+      return exactKeys(['id', 'title', 'description', 'categoryId', 'targetDate', 'status', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && reqStr(data().title, 120)
+        && str(data().description, 2000)
+        && optId(data().categoryId)
+        && optDate(data().targetDate)
+        && data().status in ['active', 'completed', 'archived'];
+    }
+    function validMilestone(id) {
+      return exactKeys(['id', 'goalId', 'title', 'dueDate', 'completedAt', 'order', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && isId(data().goalId)
+        && reqStr(data().title, 160)
+        && optDate(data().dueDate)
+        && optInstant(data().completedAt)
+        && intIn(data().order, 0, 10000);
+    }
+    function validNote(id) {
+      return exactKeys(['id', 'title', 'body', 'tags', 'pinned', 'archived', 'goalId', 'taskId', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && str(data().title, 200)
+        && str(data().body, 100000)
+        && data().tags is list && data().tags.size() <= 20
+        && data().pinned is bool && data().archived is bool
+        && optId(data().goalId) && optId(data().taskId);
+    }
+    function validEvent(id) {
+      return exactKeys(['id', 'title', 'description', 'location', 'categoryId', 'allDay', 'start', 'end', 'startDate', 'endDate', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && reqStr(data().title, 160)
+        && str(data().description, 5000)
+        && str(data().location, 200)
+        && optId(data().categoryId)
+        && data().allDay is bool
+        && isInstant(data().start) && isInstant(data().end)
+        && optDate(data().startDate) && optDate(data().endDate);
+    }
+    function validPlan(id) {
+      return exactKeys(['id', 'date', 'status', 'source', 'summary', 'items', 'unscheduledTaskIds', 'notes', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && isDate(data().date)
+        && data().status in ['draft', 'accepted', 'rejected']
+        && data().source in ['rules', 'ai']
+        && str(data().summary, 1000)
+        && data().items is list && data().items.size() <= 60
+        && data().unscheduledTaskIds is list && data().unscheduledTaskIds.size() <= 200
+        && data().notes is list && data().notes.size() <= 20;
+    }
+    function validScenario(id) {
+      return exactKeys(['id', 'title', 'description', 'status', 'horizonStart', 'horizonDays', 'changes', 'appliedAt', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && reqStr(data().title, 120)
+        && str(data().description, 1000)
+        && data().status in ['draft', 'applied']
+        && isDate(data().horizonStart)
+        && intIn(data().horizonDays, 1, 28)
+        && data().changes is list && data().changes.size() <= 30
+        && optInstant(data().appliedAt);
+    }
+    function validInsightState(id) {
+      return exactKeys(['id', 'key', 'status', 'snoozedUntil', 'createdAt', 'updatedAt'])
+        && baseOk(id)
+        && reqStr(data().key, 300)
+        && data().status in ['dismissed', 'snoozed']
+        && optInstant(data().snoozedUntil);
+    }
+
+    // ---------- paths ----------
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validProfile();
+      // Account deletion runs on the server with the Admin SDK.
+      allow delete: if false;
+
+      match /categories/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validCategory(id);
+      }
+      match /tasks/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validTask(id);
+      }
+      match /habits/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validHabit(id);
+      }
+      match /habitCompletions/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validCompletion(id);
+      }
+      match /goals/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validGoal(id);
+      }
+      match /milestones/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validMilestone(id);
+      }
+      match /notes/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validNote(id);
+      }
+      match /events/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validEvent(id);
+      }
+      match /dailyPlans/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validPlan(id);
+      }
+      match /scenarios/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validScenario(id);
+      }
+      match /insightStates/{id} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && validInsightState(id);
+      }
+    }
+
+    // AI usage counters are written by the server only.
+    match /aiUsage/{uid} {
+      allow read, write: if false;
+    }
+  }
+}

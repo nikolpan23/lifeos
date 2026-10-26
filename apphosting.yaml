@@ -1,0 +1,25 @@
+# Firebase App Hosting settings for LifeOS.
+# The Firebase web config (FIREBASE_WEBAPP_CONFIG) and server credentials are
+# provided automatically by App Hosting, so nothing secret lives in this file.
+
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  # Maximum AI plan requests per user per day.
+  - variable: AI_DAILY_LIMIT
+    value: "20"
+    availability:
+      - RUNTIME
+
+  # Optional: enable Claude-powered daily plans.
+  # 1) firebase apphosting:secrets:set ANTHROPIC_API_KEY
+  # 2) uncomment the lines below and redeploy.
+  # - variable: ANTHROPIC_API_KEY
+  #   secret: ANTHROPIC_API_KEY
+  #   availability:
+  #     - RUNTIME

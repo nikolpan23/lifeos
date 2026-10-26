@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f9fc;
+  --surface: #ffffff;
+  --sidebar: #ffffff;
+  --foreground: #24283b;
+  --muted-foreground: #687087;
+  --faint-foreground: #8790a5;
+  --subtle-foreground: #5b6278;
+  --border: #e9ecf3;
+  --border-strong: #dde1eb;
+  --accent: #8b82e8;
+  --accent-hover: #756bd8;
+  /* Button fills are a touch deeper than the accent so white text meets WCAG AA. */
+  --primary: #6e64d6;
+  --primary-hover: #5c52c2;
+  --primary-strong: #5f55c4;
+  --primary-foreground: #ffffff;
+  --lavender: #f0eeff;
+  --soft-blue: #eaf3ff;
+  --soft-green: #e9f7ef;
+  --soft-peach: #fff1e6;
+  --soft-rose: #fdecef;
+  --soft-yellow: #fff8e1;
+  --ink-blue: #3b6fb6;
+  --ink-green: #25784b;
+  --ink-peach: #a65a22;
+  --ink-rose: #b03a53;
+  --ink-yellow: #7f6010;
+  --danger: #c43856;
+  --ring: #8b82e8;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-sidebar: var(--sidebar);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-faint-foreground: var(--faint-foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-lavender: var(--lavender);
+  --color-soft-blue: var(--soft-blue);
+  --color-soft-green: var(--soft-green);
+  --color-soft-peach: var(--soft-peach);
+  --color-soft-rose: var(--soft-rose);
+  --color-soft-yellow: var(--soft-yellow);
+  --color-ink-blue: var(--ink-blue);
+  --color-ink-green: var(--ink-green);
+  --color-ink-peach: var(--ink-peach);
+  --color-ink-rose: var(--ink-rose);
+  --color-ink-yellow: var(--ink-yellow);
+  --color-danger: var(--danger);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --radius-card: 18px;
+  --radius-control: 11px;
+  --shadow-soft: 0 1px 2px rgb(36 40 59 / 0.04), 0 4px 16px -4px rgb(36 40 59 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(36 40 59 / 0.04), 0 12px 32px -8px rgb(36 40 59 / 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    line-height: 1.55;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  ::selection {
+    background: var(--lavender);
+    color: var(--foreground);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
+
+/* Rendered Markdown in notes (content is sanitized before render). */
+.prose-note {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+.prose-note h1 { font-size: 1.5rem; font-weight: 650; margin: 1.2em 0 0.5em; }
+.prose-note h2 { font-size: 1.25rem; font-weight: 650; margin: 1.1em 0 0.4em; }
+.prose-note h3 { font-size: 1.05rem; font-weight: 650; margin: 1em 0 0.3em; }
+.prose-note p { margin: 0.6em 0; }
+.prose-note ul { list-style: disc; padding-left: 1.4em; margin: 0.5em 0; }
+.prose-note ol { list-style: decimal; padding-left: 1.4em; margin: 0.5em 0; }
+.prose-note li { margin: 0.2em 0; }
+.prose-note a { color: var(--primary-strong); text-decoration: underline; text-underline-offset: 2px; }
+.prose-note code { background: var(--lavender); padding: 0.1em 0.35em; border-radius: 6px; font-size: 0.9em; }
+.prose-note pre { background: #f4f5f9; padding: 0.9em 1em; border-radius: 12px; overflow-x: auto; }
+.prose-note pre code { background: transparent; padding: 0; }
+.prose-note blockquote { border-left: 3px solid var(--primary); padding-left: 0.9em; color: var(--subtle-foreground); }
+.prose-note hr { border: 0; border-top: 1px solid var(--border); margin: 1.4em 0; }
+.prose-note input[type="checkbox"] { margin-right: 0.4em; accent-color: var(--primary); }
+.prose-note table { border-collapse: collapse; width: 100%; }
+.prose-note th, .prose-note td { border: 1px solid var(--border); padding: 0.35em 0.6em; text-align: left; }
+
+@keyframes pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes sheet-in { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes sheet-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }

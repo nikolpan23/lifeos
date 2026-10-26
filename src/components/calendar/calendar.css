@@ -1,0 +1,49 @@
+/* LifeOS skin for react-big-calendar */
+.lifeos-calendar .rbc-calendar { font-family: var(--font-sans); color: var(--foreground); }
+.lifeos-calendar .rbc-month-view,
+.lifeos-calendar .rbc-time-view { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: #fff; }
+.lifeos-calendar .rbc-header { border-bottom: 1px solid var(--border); padding: 8px 4px; font-size: 12px; font-weight: 600; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.04em; }
+.lifeos-calendar .rbc-header + .rbc-header,
+.lifeos-calendar .rbc-day-bg + .rbc-day-bg,
+.lifeos-calendar .rbc-month-row + .rbc-month-row,
+.lifeos-calendar .rbc-time-header-content,
+.lifeos-calendar .rbc-time-content > * + * > *,
+.lifeos-calendar .rbc-timeslot-group,
+.lifeos-calendar .rbc-time-content,
+.lifeos-calendar .rbc-time-header.rbc-overflowing,
+.lifeos-calendar .rbc-day-slot .rbc-time-slot { border-color: #eef0f5; }
+.lifeos-calendar .rbc-day-slot .rbc-time-slot { border-top-style: dashed; }
+.lifeos-calendar .rbc-off-range-bg { background: #fafbfd; }
+.lifeos-calendar .rbc-off-range { color: #b5bccb; }
+.lifeos-calendar .rbc-today { background: #f7f6ff; }
+.lifeos-calendar .rbc-date-cell { padding: 6px 8px 2px; font-size: 12.5px; font-weight: 500; }
+.lifeos-calendar .rbc-date-cell.rbc-now > button { background: var(--primary); color: #fff; border-radius: 999px; min-width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
+.lifeos-calendar .rbc-button-link { border-radius: 6px; }
+.lifeos-calendar .rbc-time-gutter .rbc-label { font-size: 11.5px; color: var(--muted-foreground); padding: 0 8px; }
+.lifeos-calendar .rbc-time-header-gutter, .lifeos-calendar .rbc-time-gutter { background: #fff; }
+.lifeos-calendar .rbc-allday-cell { min-height: 28px; }
+.lifeos-calendar .rbc-current-time-indicator { background: var(--danger); height: 2px; }
+.lifeos-calendar .rbc-current-time-indicator::before { content: ""; position: absolute; left: -4px; top: -3px; width: 8px; height: 8px; border-radius: 999px; background: var(--danger); }
+.lifeos-calendar .rbc-slot-selection { background: rgb(139 130 232 / 0.18); color: var(--primary-strong); border-radius: 8px; font-size: 12px; }
+.lifeos-calendar .rbc-show-more { color: var(--primary-strong); font-size: 12px; font-weight: 600; background: transparent; padding: 0 6px; }
+.lifeos-calendar .rbc-overlay { border-radius: 14px; border: 1px solid var(--border); box-shadow: var(--shadow-lift); padding: 8px; }
+.lifeos-calendar .rbc-overlay-header { border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; margin: -8px -8px 6px; padding: 8px 10px; }
+
+/* Event blocks */
+.lifeos-calendar .rbc-event, .lifeos-calendar .rbc-day-slot .rbc-background-event {
+  background: var(--lavender); color: var(--primary-strong); border: 0; border-left: 3px solid #8b82e8;
+  border-radius: 8px; padding: 3px 6px; font-size: 12px; line-height: 1.3; box-shadow: none;
+}
+.lifeos-calendar .rbc-time-view .rbc-event { border-radius: 9px; padding: 4px 7px; }
+.lifeos-calendar .rbc-event.rbc-selected { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ring); }
+.lifeos-calendar .rbc-event:focus { outline: 2px solid var(--ring); outline-offset: 1px; }
+.lifeos-calendar .rbc-event-label { display: none; }
+.lifeos-calendar .lifeos-blue { background: var(--soft-blue); color: var(--ink-blue); border-left-color: #6aa5ec; }
+.lifeos-calendar .lifeos-green { background: var(--soft-green); color: var(--ink-green); border-left-color: #5fbf8a; }
+.lifeos-calendar .lifeos-peach { background: var(--soft-peach); color: var(--ink-peach); border-left-color: #f3a36b; }
+.lifeos-calendar .lifeos-rose { background: var(--soft-rose); color: var(--ink-rose); border-left-color: #e88aa0; }
+.lifeos-calendar .lifeos-yellow { background: var(--soft-yellow); color: var(--ink-yellow); border-left-color: #e9c15a; }
+.lifeos-calendar .lifeos-none { background: #f1f2f7; color: var(--subtle-foreground); border-left-color: #c9cedb; }
+.lifeos-calendar .lifeos-task { background: #fff; color: var(--subtle-foreground); border: 1px dashed #d4d8e3; border-left: 1px dashed #d4d8e3; }
+.lifeos-calendar .lifeos-conflict { box-shadow: inset 0 0 0 1.5px #e9c15a; }
+.lifeos-calendar .rbc-time-content { scrollbar-width: thin; }
