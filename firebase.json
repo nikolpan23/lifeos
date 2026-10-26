@@ -13,5 +13,24 @@
     "ui": {
       "enabled": true
     }
-  }
+  },
+  "apphosting": [
+    {
+      "backendId": "lifeos",
+      "rootDir": "/",
+      "ignore": [
+        "node_modules",
+        ".git",
+        ".next",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "firestore-debug.log",
+        "test-results",
+        "playwright-report",
+        "tests",
+        ".env.local",
+        ".env.emulators"
+      ]
+    }
+  ]
 }
