@@ -91,3 +91,9 @@ For local development, put `ANTHROPIC_API_KEY=...` in `.env.local` instead.
 ## Updating
 
 Pushing to `main` deploys a new version. When `firestore.rules` changes, run `npm run deploy:rules` again (rules aren't deployed by App Hosting).
+
+## Serving on `<project-id>.web.app`
+
+`firebase.json` also configures Firebase Hosting to forward every request to the App Hosting Cloud Run service (`lifeos` in `europe-west4`), so the app is reachable on `https://<project-id>.web.app` as well as on its `.hosted.app` address. This needs the Cloud Run service to allow public invocation (`allUsers` with the Cloud Run Invoker role). Firebase Hosting forwards only the `__session` cookie, which is the one LifeOS uses.
+
+Deploy both together with `npm run deploy`, so the Hosting cache is refreshed whenever the app changes.

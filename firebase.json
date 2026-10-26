@@ -32,5 +32,21 @@
         ".env.emulators"
       ]
     }
-  ]
+  ],
+  "hosting": {
+    "site": "lifeapp-nikol",
+    "public": "hosting",
+    "ignore": [
+      "**/.*"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "lifeos",
+          "region": "europe-west4"
+        }
+      }
+    ]
+  }
 }

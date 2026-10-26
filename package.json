@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes",
     "emulators": "firebase emulators:start --only auth,firestore --project demo-lifeos",
-    "dev:emulators": "dotenv -e .env.emulators -- next dev"
+    "dev:emulators": "dotenv -e .env.emulators -- next dev",
+    "deploy": "firebase deploy --only apphosting,hosting"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",
