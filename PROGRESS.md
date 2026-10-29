@@ -1,6 +1,6 @@
 # LifeOS progress
 
-Last updated: 2026-10-26
+Last updated: 2026-10-29
 
 ## Status by phase
 
@@ -12,6 +12,14 @@ Last updated: 2026-10-26
 | 4. Intelligence | Life Radar (8 explainable rules, dismiss and snooze), What-If Studio (isolated scenarios, before/after metrics, apply only on confirm), Insights (from real data only) | Done |
 | 5. AI and account safety | Plan My Day (deterministic planner plus optional Claude ordering via `/api/ai/plan` with consent, daily limit and fallback), data export, account deletion with re-authentication | Done |
 | 6. Quality | Unit, rules and end-to-end tests, lint, production build, README, landing page with real screenshots | Done |
+
+## 2026-10-29 redesign
+
+- Warm cream palette (terracotta primary, sage, clay, dusty blue), Fraunces headings and Figtree body text, a paper-grain background and a new sunrise logo. Text and button colours re-checked against WCAG AA.
+- Notes: blank notes are no longer kept. A note left empty is discarded when you leave it, "New note" reuses an existing blank note, old blanks are tidied on open, and the writing area is a clearly marked lined surface that gets focus.
+- Navigation: sidebar grouped into Plan / Keep track / Helpers with one-line descriptions for the less obvious pages, a five-tab bar on phones, the page purpose in the header, a dismissible "how this page works" tip on every page (can be shown again from Settings), and a getting-started checklist on the dashboard for new accounts.
+- Small icon animations on hover and on the active page, gently floating icons in empty states; all off under reduced motion.
+- Landing page screenshots retaken.
 
 ## Verified
 

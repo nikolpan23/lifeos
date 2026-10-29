@@ -2,15 +2,16 @@
 
 import { useMemo } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { CloudSun, Moon, Sun } from "lucide-react";
 import { useLife, useNow, useToday } from "@/lib/data/store";
 import { durationLabel, formatLongDate, formatTime, greetingFor, localDateOf } from "@/lib/dates";
 import { habitsDueOn } from "@/lib/domain/habits";
 import { dayAvailability } from "@/lib/scheduling/free-time";
 
-function emojiFor(greeting: string) {
-  if (greeting === "Good morning") return "☀️";
-  if (greeting === "Good afternoon") return "🌤️";
-  return "🌙";
+function iconFor(greeting: string) {
+  if (greeting === "Good morning") return { Icon: Sun, tone: "text-ink-yellow bg-soft-yellow" };
+  if (greeting === "Good afternoon") return { Icon: CloudSun, tone: "text-ink-peach bg-soft-peach" };
+  return { Icon: Moon, tone: "text-ink-blue bg-soft-blue" };
 }
 
 export function DashboardHero() {
@@ -23,6 +24,7 @@ export function DashboardHero() {
   const habits = useLife((d) => d.habits);
   const tz = profile.timezone;
   const greeting = greetingFor(now, tz);
+  const { Icon, tone } = iconFor(greeting);
 
   const overview = useMemo(() => {
     const due = tasks.filter((t) => t.status === "open" && t.dueDate === today).length;
@@ -48,9 +50,12 @@ export function DashboardHero() {
   return (
     <motion.div initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}>
       <p className="text-[13px] font-medium text-muted-foreground lg:hidden">{formatLongDate(today)}</p>
-      <h1 className="mt-1 text-[30px] leading-tight font-semibold tracking-[-0.025em] sm:text-[34px]">
+      <h1 className="mt-1 text-[32px] leading-tight sm:text-[38px]">
         {greeting}
-        {profile.displayName ? `, ${profile.displayName}` : ""}! <span aria-hidden>{emojiFor(greeting)}</span>
+        {profile.displayName ? `, ${profile.displayName}` : ""}
+        <span aria-hidden className={`anim-float ml-3 inline-flex size-10 translate-y-[-3px] items-center justify-center rounded-full align-middle ${tone}`}>
+          <Icon className="size-5" />
+        </span>
       </h1>
       <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-subtle-foreground">
         {overview.line} {overview.free}

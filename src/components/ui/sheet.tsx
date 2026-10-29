@@ -14,7 +14,7 @@ export const SheetDescription = SheetPrimitive.Description;
 export function SheetContent({ className, children, side = "left", ...props }: React.ComponentProps<typeof SheetPrimitive.Content> & { side?: "left" | "right" }) {
   return (
     <SheetPrimitive.Portal>
-      <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-[#24283b]/25 data-[state=open]:animate-[overlay-in_150ms_ease-out]" />
+      <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-[#2e2a24]/25 data-[state=open]:animate-[overlay-in_150ms_ease-out]" />
       <SheetPrimitive.Content
         className={cn(
           "fixed inset-y-0 z-50 flex w-[min(320px,88vw)] flex-col bg-surface shadow-lift outline-none",
@@ -24,7 +24,7 @@ export function SheetContent({ className, children, side = "left", ...props }: R
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="absolute top-4 right-4 inline-flex size-8 items-center justify-center rounded-[10px] text-muted-foreground hover:bg-[#f1f2f7] hover:text-foreground">
+        <SheetPrimitive.Close className="absolute top-4 right-4 inline-flex size-8 items-center justify-center rounded-[10px] text-muted-foreground hover:bg-[#efe6d5] hover:text-foreground">
           <X className="size-4" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>

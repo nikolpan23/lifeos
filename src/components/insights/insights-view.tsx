@@ -89,7 +89,7 @@ export function InsightsView() {
                   <CartesianGrid vertical={false} stroke={GRID} />
                   <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: AXIS.stroke }} tick={AXIS.tick} minTickGap={12} />
                   <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={AXIS.tick} width={48} />
-                  <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#d4d8e3" }} />
+                  <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#d8ccb6" }} />
                   <Area type="monotone" dataKey="completed" name="Completed" stroke={SERIES.lavender} strokeWidth={2} fill="url(#fillCompleted)" dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "#fff" }} />
                   <Area type="monotone" dataKey="added" name="Added" stroke={SERIES.teal} strokeWidth={2} fill="transparent" dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "#fff" }} />
                 </AreaChart>
@@ -112,7 +112,7 @@ export function InsightsView() {
                   <CartesianGrid vertical={false} stroke={GRID} />
                   <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: AXIS.stroke }} tick={AXIS.tick} minTickGap={8} />
                   <YAxis tickLine={false} axisLine={false} tick={AXIS.tick} width={48} unit="h" />
-                  <Tooltip cursor={{ fill: "#f3f4f8", radius: 8 }} content={<ChartTooltip format={(v) => `${v} h`} />} />
+                  <Tooltip cursor={{ fill: "#f1e9da", radius: 8 }} content={<ChartTooltip format={(v) => `${v} h`} />} />
                   <Bar dataKey="due" name="Work due" fill={SERIES.orange} radius={[4, 4, 0, 0]} maxBarSize={12} />
                   <Bar dataKey="free" name="Free time" fill={SERIES.blue} radius={[4, 4, 0, 0]} maxBarSize={12} />
                 </BarChart>
@@ -171,10 +171,10 @@ export function InsightsView() {
                   <BarChart data={cats} layout="vertical" margin={{ top: 0, right: 36, bottom: 0, left: 8 }}>
                     <XAxis type="number" hide />
                     <YAxis type="category" dataKey="name" tickLine={false} axisLine={false} tick={AXIS.tick} width={96} />
-                    <Tooltip cursor={{ fill: "#f3f4f8" }} content={<ChartTooltip format={(v) => `${v} h`} />} />
-                    <Bar dataKey="hours" name="Hours" radius={[0, 4, 4, 0]} maxBarSize={18} label={{ position: "right", fill: "#5b6278", fontSize: 12, formatter: (v: unknown) => `${v}h` }}>
+                    <Tooltip cursor={{ fill: "#f1e9da" }} content={<ChartTooltip format={(v) => `${v} h`} />} />
+                    <Bar dataKey="hours" name="Hours" radius={[0, 4, 4, 0]} maxBarSize={18} label={{ position: "right", fill: "#5a5246", fontSize: 12, formatter: (v: unknown) => `${v}h` }}>
                       {cats.map((c) => (
-                        <Cell key={c.categoryId} fill={c.color ? CATEGORY_STYLES[c.color].chart : "#9aa1b3"} />
+                        <Cell key={c.categoryId} fill={c.color ? CATEGORY_STYLES[c.color].chart : "#a3977f"} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -229,7 +229,7 @@ export function InsightsView() {
                   <CartesianGrid vertical={false} stroke={GRID} />
                   <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: AXIS.stroke }} tick={AXIS.tick} />
                   <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={AXIS.tick} width={48} />
-                  <Tooltip cursor={{ fill: "#f3f4f8", radius: 8 }} content={<ChartTooltip />} />
+                  <Tooltip cursor={{ fill: "#f1e9da", radius: 8 }} content={<ChartTooltip />} />
                   <Bar dataKey="completed" name="Tasks completed" fill={SERIES.lavender} radius={[4, 4, 0, 0]} maxBarSize={22} />
                 </BarChart>
               </ResponsiveContainer>

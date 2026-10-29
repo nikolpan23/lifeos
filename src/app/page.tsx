@@ -113,12 +113,12 @@ export default function LandingPage() {
 
       <main>
         <section className="relative overflow-hidden">
-          <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-40 h-[520px] bg-[radial-gradient(60%_60%_at_50%_30%,#f0eeff_0%,rgba(248,249,252,0)_70%)]" />
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-40 h-[520px] bg-[radial-gradient(60%_60%_at_50%_30%,#f3e3d3_0%,rgba(245,239,227,0)_70%)]" />
           <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-10 text-center sm:px-6 sm:pt-24">
-            <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#e6e2ff] bg-surface px-3 py-1 text-[13px] font-medium text-primary-strong shadow-soft">
+            <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#efd9c4] bg-surface px-3 py-1 text-[13px] font-medium text-primary-strong shadow-soft">
               <Sparkles className="size-3.5" aria-hidden /> Tasks, habits, goals, notes and calendar in one calm place
             </p>
-            <h1 className="mx-auto mt-6 max-w-3xl text-[40px] leading-[1.05] font-semibold tracking-[-0.035em] text-balance sm:text-[60px]">
+            <h1 className="mx-auto mt-6 max-w-3xl text-[40px] leading-[1.05] font-medium tracking-[-0.02em] text-balance sm:text-[60px]">
               Your life, beautifully organized.
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-[17px] leading-relaxed text-subtle-foreground text-balance sm:text-lg">
@@ -222,7 +222,7 @@ export default function LandingPage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="rounded-[28px] bg-gradient-to-br from-lavender via-[#f4f2ff] to-soft-blue px-6 py-14 text-center sm:px-12">
+          <div className="rounded-[28px] bg-gradient-to-br from-lavender via-[#f6e9db] to-soft-blue px-6 py-14 text-center sm:px-12">
             <h2 className="text-[30px] font-semibold tracking-[-0.025em] sm:text-[38px]">Start tomorrow morning feeling clear.</h2>
             <p className="mx-auto mt-3 max-w-xl text-[16px] text-subtle-foreground">Set up takes a couple of minutes. Or look around the demo first.</p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">

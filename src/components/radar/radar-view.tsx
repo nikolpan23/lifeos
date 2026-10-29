@@ -80,7 +80,7 @@ export function RadarView() {
               )}
             </CardContent>
           </Card>
-          <Card className="bg-[#fbfbfd] shadow-none">
+          <Card className="bg-[#fdf8ef] shadow-none">
             <CardContent className="flex gap-3 p-5 text-[13px] leading-relaxed text-subtle-foreground">
               <ShieldCheck className="size-5 shrink-0 text-ink-green" aria-hidden />
               <p>Radar doesn’t guess or use outside data. It only connects records you’ve added to LifeOS, and it never changes anything for you.</p>

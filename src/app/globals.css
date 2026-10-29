@@ -3,35 +3,37 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
-  --background: #f8f9fc;
-  --surface: #ffffff;
-  --sidebar: #ffffff;
-  --foreground: #24283b;
-  --muted-foreground: #687087;
-  --faint-foreground: #8790a5;
-  --subtle-foreground: #5b6278;
-  --border: #e9ecf3;
-  --border-strong: #dde1eb;
-  --accent: #8b82e8;
-  --accent-hover: #756bd8;
-  /* Button fills are a touch deeper than the accent so white text meets WCAG AA. */
-  --primary: #6e64d6;
-  --primary-hover: #5c52c2;
-  --primary-strong: #5f55c4;
+  /* Warm cream paper palette. Token names are kept from the first design;
+     "lavender" is now the soft clay tint used for selected and active states. */
+  --background: #f5efe3;
+  --surface: #fffbf3;
+  --sidebar: #efe7d7;
+  --foreground: #2e2a24;
+  --muted-foreground: #6f675b;
+  --faint-foreground: #857b6b;
+  --subtle-foreground: #5a5246;
+  --border: #e6dccb;
+  --border-strong: #d8ccb6;
+  --accent: #c26a45;
+  --accent-hover: #ad5c3a;
+  /* Button fills are deeper than the accent so white text meets WCAG AA. */
+  --primary: #a8532f;
+  --primary-hover: #8f4526;
+  --primary-strong: #93482a;
   --primary-foreground: #ffffff;
-  --lavender: #f0eeff;
-  --soft-blue: #eaf3ff;
-  --soft-green: #e9f7ef;
-  --soft-peach: #fff1e6;
-  --soft-rose: #fdecef;
-  --soft-yellow: #fff8e1;
-  --ink-blue: #3b6fb6;
-  --ink-green: #25784b;
-  --ink-peach: #a65a22;
-  --ink-rose: #b03a53;
-  --ink-yellow: #7f6010;
-  --danger: #c43856;
-  --ring: #8b82e8;
+  --lavender: #f3e3d3;
+  --soft-blue: #e3ecef;
+  --soft-green: #e6eedc;
+  --soft-peach: #f8e5d3;
+  --soft-rose: #f6e1dc;
+  --soft-yellow: #f7edcc;
+  --ink-blue: #3d6478;
+  --ink-green: #4b6b2f;
+  --ink-peach: #9a5424;
+  --ink-rose: #a3423a;
+  --ink-yellow: #7a5c12;
+  --danger: #b23b2e;
+  --ring: #c26a45;
 }
 
 @theme inline {
@@ -63,12 +65,13 @@
   --color-ink-yellow: var(--ink-yellow);
   --color-danger: var(--danger);
   --color-ring: var(--ring);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif), ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --radius-card: 18px;
   --radius-control: 11px;
-  --shadow-soft: 0 1px 2px rgb(36 40 59 / 0.04), 0 4px 16px -4px rgb(36 40 59 / 0.06);
-  --shadow-lift: 0 2px 4px rgb(36 40 59 / 0.04), 0 12px 32px -8px rgb(36 40 59 / 0.12);
+  --shadow-soft: 0 1px 2px rgb(74 58 38 / 0.05), 0 4px 16px -6px rgb(74 58 38 / 0.08);
+  --shadow-lift: 0 2px 4px rgb(74 58 38 / 0.05), 0 14px 32px -10px rgb(74 58 38 / 0.16);
 }
 
 @layer base {
@@ -82,8 +85,20 @@
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "cv11", "ss01";
     line-height: 1.55;
+    /* A faint paper grain so the cream doesn't read as a flat fill. */
+    background-image: radial-gradient(rgb(120 96 60 / 0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+  h1,
+  h2,
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+  }
+  h1 {
+    font-weight: 500;
   }
   :focus-visible {
     outline: 2px solid var(--ring);
@@ -94,6 +109,27 @@
     background: var(--lavender);
     color: var(--foreground);
   }
+}
+
+/* Small icon animations. Each plays on hover or focus of its parent (.icon-host)
+   or when the item is active, and all of them are off under reduced motion. */
+@keyframes icon-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(10deg); } }
+@keyframes icon-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes icon-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes icon-twinkle { 0%, 100% { transform: scale(1) rotate(0); opacity: 1; } 50% { transform: scale(1.18) rotate(12deg); opacity: 0.85; } }
+@keyframes icon-beat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.16); } 60% { transform: scale(0.96); } }
+@keyframes icon-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-4px) rotate(-3deg); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .icon-host:hover .anim-wiggle, .icon-host:focus-visible .anim-wiggle, [aria-current="page"] .anim-wiggle { animation: icon-wiggle 0.6s ease-in-out; }
+  .icon-host:hover .anim-bob, .icon-host:focus-visible .anim-bob, [aria-current="page"] .anim-bob { animation: icon-bob 0.9s ease-in-out 2; }
+  .icon-host:hover .anim-spin, .icon-host:focus-visible .anim-spin { animation: icon-spin 1.4s cubic-bezier(.5,.1,.3,1); }
+  [aria-current="page"] .anim-spin { animation: icon-spin 6s linear infinite; }
+  .icon-host:hover .anim-twinkle, .icon-host:focus-visible .anim-twinkle, [aria-current="page"] .anim-twinkle { animation: icon-twinkle 1.2s ease-in-out 2; }
+  .icon-host:hover .anim-beat, .icon-host:focus-visible .anim-beat, [aria-current="page"] .anim-beat { animation: icon-beat 0.8s ease-in-out 2; }
+  .anim-float { animation: icon-float 4.5s ease-in-out infinite; }
+  .rise-in { animation: rise-in 0.4s ease-out both; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -122,7 +158,7 @@
 .prose-note li { margin: 0.2em 0; }
 .prose-note a { color: var(--primary-strong); text-decoration: underline; text-underline-offset: 2px; }
 .prose-note code { background: var(--lavender); padding: 0.1em 0.35em; border-radius: 6px; font-size: 0.9em; }
-.prose-note pre { background: #f4f5f9; padding: 0.9em 1em; border-radius: 12px; overflow-x: auto; }
+.prose-note pre { background: #f2eadb; padding: 0.9em 1em; border-radius: 12px; overflow-x: auto; }
 .prose-note pre code { background: transparent; padding: 0; }
 .prose-note blockquote { border-left: 3px solid var(--primary); padding-left: 0.9em; color: var(--subtle-foreground); }
 .prose-note hr { border: 0; border-top: 1px solid var(--border); margin: 1.4em 0; }
@@ -140,3 +176,12 @@
 @keyframes sheet-in { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 @keyframes sheet-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes pop-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+/* Writing area in notes: a lined-paper surface so it's obvious where to type. */
+.note-paper {
+  background-color: var(--surface);
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 27px, rgb(180 150 110 / 0.16) 27px, rgb(180 150 110 / 0.16) 28px);
+  background-attachment: local;
+  background-position: 0 11px;
+  line-height: 28px;
+}

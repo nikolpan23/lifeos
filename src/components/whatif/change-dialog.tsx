@@ -132,7 +132,7 @@ export function ChangeDialog({
                       const days = (draft.days as number[]) ?? [];
                       const on = days.includes(d);
                       return (
-                        <button key={d} type="button" aria-pressed={on} onClick={() => set("days", on ? days.filter((x) => x !== d) : [...days, d].sort())} className={cn("h-9 min-w-11 rounded-full border px-2 text-[13px] font-medium", on ? "border-primary bg-primary text-white" : "border-border text-subtle-foreground hover:bg-[#f6f7fa]")}>
+                        <button key={d} type="button" aria-pressed={on} onClick={() => set("days", on ? days.filter((x) => x !== d) : [...days, d].sort())} className={cn("h-9 min-w-11 rounded-full border px-2 text-[13px] font-medium", on ? "border-primary bg-primary text-white" : "border-border text-subtle-foreground hover:bg-[#f5eee1]")}>
                           {WEEKDAY_LABELS[d]}
                         </button>
                       );
@@ -153,7 +153,7 @@ export function ChangeDialog({
 
             {t === "one_off_event" && (
               <>
-                <div className="flex items-center justify-between rounded-[12px] bg-[#f6f7fa] px-3 py-2.5">
+                <div className="flex items-center justify-between rounded-[12px] bg-[#f5eee1] px-3 py-2.5">
                   <Label htmlFor="chg-allday">All day / away</Label>
                   <Switch id="chg-allday" checked={!!draft.allDay} onCheckedChange={(c) => set("allDay", c)} />
                 </div>

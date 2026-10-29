@@ -85,7 +85,7 @@ export function EventDialog({ open, onOpenChange, event, preset }: { open: boole
             <Field id="event-title" label="Title" error={formState.errors.title?.message}>
               <Input autoFocus placeholder="e.g. Coffee with Jordan" {...register("title")} />
             </Field>
-            <div className="flex items-center justify-between rounded-[12px] bg-[#f6f7fa] px-3 py-2.5">
+            <div className="flex items-center justify-between rounded-[12px] bg-[#f5eee1] px-3 py-2.5">
               <Label htmlFor="event-allday">All-day event</Label>
               <Switch
                 id="event-allday"
@@ -119,7 +119,7 @@ export function EventDialog({ open, onOpenChange, event, preset }: { open: boole
               </div>
             )}
             {conflicts.length > 0 && (
-              <div role="status" className="flex gap-2.5 rounded-[12px] border border-[#f4e3ae] bg-soft-yellow px-3 py-2.5 text-sm text-ink-yellow">
+              <div role="status" className="flex gap-2.5 rounded-[12px] border border-[#f1e0b0] bg-soft-yellow px-3 py-2.5 text-sm text-ink-yellow">
                 <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
                 <div>
                   <p className="font-medium">Overlaps with {conflicts.length === 1 ? "another event" : `${conflicts.length} events`}</p>

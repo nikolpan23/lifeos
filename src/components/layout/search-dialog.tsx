@@ -109,7 +109,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 aria-selected={i === active}
                 onMouseEnter={() => setActive(i)}
                 onClick={() => go(r)}
-                className={cn("flex cursor-pointer items-center gap-3 rounded-[10px] px-3 py-2.5", i === active && "bg-[#f3f4f8]")}
+                className={cn("flex cursor-pointer items-center gap-3 rounded-[10px] px-3 py-2.5", i === active && "bg-[#f1e9da]")}
               >
                 <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium">{r.title}</span>

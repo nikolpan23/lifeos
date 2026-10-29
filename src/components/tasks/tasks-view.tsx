@@ -97,7 +97,7 @@ export function TasksView() {
               <TabsTrigger key={v.id} value={v.id}>
                 <v.icon className="size-3.5" aria-hidden />
                 {v.label}
-                {v.id !== "completed" && counts[v.id] > 0 && <span className="rounded-full bg-[#e6e8ef] px-1.5 text-[11px] leading-4 text-subtle-foreground">{counts[v.id]}</span>}
+                {v.id !== "completed" && counts[v.id] > 0 && <span className="rounded-full bg-[#e4d9c6] px-1.5 text-[11px] leading-4 text-subtle-foreground">{counts[v.id]}</span>}
               </TabsTrigger>
             ))}
           </TabsList>

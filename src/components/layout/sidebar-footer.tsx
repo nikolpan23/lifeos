@@ -13,7 +13,7 @@ export function SidebarFooter() {
         <p className="flex items-center gap-1.5 text-[13px] font-semibold text-ink-peach">
           <FlaskConical className="size-3.5" aria-hidden /> Demo mode
         </p>
-        <p className="mt-1 text-[12px] leading-relaxed text-[#7a5a43]">Sample data, stored only in this browser. Nothing here is sent anywhere.</p>
+        <p className="mt-1 text-[12px] leading-relaxed text-[#74513a]">Sample data, stored only in this browser. Nothing here is sent anywhere.</p>
         <Link href="/signup" className="mt-2.5 inline-block text-[12px] font-semibold text-ink-peach underline underline-offset-2">
           Create your own space
         </Link>

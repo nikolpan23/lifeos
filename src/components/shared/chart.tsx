@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 
 /** Validated categorical order (see README › Charts). Color follows entity, never rank. */
 export const SERIES = {
-  lavender: "#7b6fe0",
-  teal: "#1f9e86",
-  orange: "#e8763f",
-  blue: "#3a86d4",
-  amber: "#d69a12",
-  rose: "#d9587f",
+  lavender: "#b35d3a",
+  teal: "#5e8a4a",
+  orange: "#c7743f",
+  blue: "#4f7f99",
+  amber: "#b8901f",
+  rose: "#b5564d",
 } as const;
 
-export const AXIS = { stroke: "#e9ecf3", tick: { fill: "#687087", fontSize: 12 } };
-export const GRID = "#eef0f5";
+export const AXIS = { stroke: "#e6dccb", tick: { fill: "#6f675b", fontSize: 12 } };
+export const GRID = "#ede4d3";
 
 export interface LegendItem {
   label: string;
@@ -97,7 +97,7 @@ export function ChartFrame({
           <div className="overflow-x-auto rounded-[12px] border border-border">
             <table className="w-full text-left text-[13px]">
               <caption className="sr-only">{caption}</caption>
-              <thead className="bg-[#f7f8fb] text-muted-foreground">
+              <thead className="bg-[#f6efe2] text-muted-foreground">
                 <tr>
                   {columns.map((c) => (
                     <th key={c} scope="col" className="px-3 py-2 font-medium">

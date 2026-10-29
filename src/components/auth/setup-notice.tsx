@@ -19,7 +19,7 @@ export function SetupNotice() {
         <ol className="mt-4 list-decimal space-y-1.5 pl-5 text-[14px] leading-relaxed text-subtle-foreground">
           <li>Create a Firebase project and add a web app.</li>
           <li>Enable Email/Password sign-in and create a Firestore database.</li>
-          <li>Copy the web app config into <code className="rounded bg-[#f1f2f6] px-1">.env.local</code> (see the README).</li>
+          <li>Copy the web app config into <code className="rounded bg-[#efe6d5] px-1">.env.local</code> (see the README).</li>
           <li>Restart the dev server.</li>
         </ol>
         <div className="mt-6 flex flex-wrap gap-2">

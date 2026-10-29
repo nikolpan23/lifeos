@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Download, Loader2, Plus, RotateCcw, ShieldAlert, Sparkles, Trash2 } from "lucide-react";
+import { Download, Lightbulb, Loader2, Plus, RotateCcw, ShieldAlert, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { resetPageTips } from "@/components/shared/page-tip";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +47,7 @@ function ColorPicker({ value, onChange, label }: { value: CategoryColor; onChang
   return (
     <div role="radiogroup" aria-label={label} className="flex gap-1.5">
       {CATEGORY_COLORS.map((c) => (
-        <button key={c} type="button" role="radio" aria-checked={value === c} aria-label={CATEGORY_STYLES[c].label} onClick={() => onChange(c)} className={cn("size-7 rounded-full ring-offset-2 transition-shadow", CATEGORY_STYLES[c].dot, value === c && "ring-2 ring-[#24283b]/40")} />
+        <button key={c} type="button" role="radio" aria-checked={value === c} aria-label={CATEGORY_STYLES[c].label} onClick={() => onChange(c)} className={cn("size-7 rounded-full ring-offset-2 transition-shadow", CATEGORY_STYLES[c].dot, value === c && "ring-2 ring-[#2e2a24]/40")} />
       ))}
     </div>
   );
@@ -210,7 +211,7 @@ export function SettingsView() {
           <CardHeader>
             <div>
               <CardTitle>Categories</CardTitle>
-              <CardDescription>Pastel labels for tasks, habits, goals and events.</CardDescription>
+              <CardDescription>Colour labels for tasks, habits, goals and events.</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="grid gap-2">
@@ -232,6 +233,27 @@ export function SettingsView() {
         <Card>
           <CardHeader>
             <div>
+              <CardTitle>Help and tips</CardTitle>
+              <CardDescription>Each page shows a short tip the first time you open it. Hidden them all? Bring them back here.</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                resetPageTips();
+                toast.success("Tips will show again on every page");
+              }}
+            >
+              <Lightbulb /> Show tips again
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="size-4 text-primary-strong" aria-hidden /> AI suggestions
               </CardTitle>
@@ -239,7 +261,7 @@ export function SettingsView() {
             </div>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <div className="flex items-start justify-between gap-4 rounded-[14px] bg-[#f7f8fb] p-4">
+            <div className="flex items-start justify-between gap-4 rounded-[14px] bg-[#f6efe2] p-4">
               <div>
                 <Label htmlFor="ai-consent" className="text-[14px] font-semibold text-foreground">
                   Use Claude to prioritise and explain daily plans

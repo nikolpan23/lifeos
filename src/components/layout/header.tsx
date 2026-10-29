@@ -70,14 +70,17 @@ export function Header() {
           <Logo className="[&>span:last-child]:hidden sm:[&>span:last-child]:inline" />
         </Link>
         <div className="hidden min-w-0 flex-1 lg:block">
-          <p className="truncate text-[15px] font-semibold">{isDashboard ? "Dashboard" : item.label}</p>
+          <p className="truncate text-[15px] font-semibold">
+            {item.label}
+            {!isDashboard && <span className="font-normal text-muted-foreground"> · {item.description}</span>}
+          </p>
           <p className="text-[12px] text-muted-foreground">{formatLongDate(today)}</p>
         </div>
         <div className="flex flex-1 items-center justify-end gap-2 lg:flex-none">
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="hidden h-10 w-64 items-center gap-2.5 rounded-[11px] border border-border bg-surface px-3 text-sm text-faint-foreground shadow-[0_1px_2px_rgb(36_40_59/0.03)] transition-colors hover:border-border-strong md:flex"
+            className="hidden h-10 w-64 items-center gap-2.5 rounded-[11px] border border-border bg-surface px-3 text-sm text-faint-foreground shadow-[0_1px_2px_rgb(46_42_36/0.03)] transition-colors hover:border-border-strong md:flex"
           >
             <Search className="size-4" aria-hidden />
             <span className="flex-1 text-left">Search</span>
@@ -88,8 +91,8 @@ export function Header() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button aria-label="Quick add" className="max-sm:size-10 max-sm:px-0">
-                <Plus className="size-[18px]" />
+              <Button aria-label="Quick add" className="icon-host max-sm:size-10 max-sm:px-0">
+                <Plus className="size-[18px] transition-transform duration-300 [[data-state=open]_&]:rotate-45" />
                 <span className="hidden sm:inline">Quick add</span>
               </Button>
             </DropdownMenuTrigger>

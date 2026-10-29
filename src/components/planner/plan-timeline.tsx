@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const KIND = {
   task: { icon: CheckCircle2, cls: "bg-lavender text-primary-strong", label: "Focus" },
   habit: { icon: Repeat, cls: "bg-soft-green text-ink-green", label: "Habit" },
-  event: { icon: CalendarDays, cls: "bg-[#f1f2f7] text-subtle-foreground", label: "Event" },
+  event: { icon: CalendarDays, cls: "bg-[#efe6d5] text-subtle-foreground", label: "Event" },
   break: { icon: Coffee, cls: "bg-soft-peach text-ink-peach", label: "Break" },
 } as const;
 
@@ -43,7 +43,7 @@ export function PlanTimeline({
             <span className={cn("relative z-10 mt-1.5 flex size-7 shrink-0 items-center justify-center rounded-full ring-4 ring-surface", k.cls)}>
               <Icon className="size-3.5" aria-hidden />
             </span>
-            <div className={cn("min-w-0 flex-1 rounded-[12px] px-3 py-2", item.kind === "task" ? "border border-[#e6e2ff] bg-[#faf9ff]" : item.kind === "event" ? "bg-[#f7f8fb]" : "")}>
+            <div className={cn("min-w-0 flex-1 rounded-[12px] px-3 py-2", item.kind === "task" ? "border border-[#efd9c4] bg-[#fbf3e8]" : item.kind === "event" ? "bg-[#f6efe2]" : "")}>
               <div className="flex items-start gap-2">
                 {item.kind === "task" && onToggleTask && item.refId && (
                   <Checkbox round className="mt-0.5" checked={!!done} onCheckedChange={(c) => onToggleTask(item.refId!, c === true)} aria-label={`Complete “${item.title}”`} />

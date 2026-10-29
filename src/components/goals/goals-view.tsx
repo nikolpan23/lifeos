@@ -54,7 +54,7 @@ function MilestoneItem({ m, today }: { m: GoalMilestone; today: string }) {
   };
   if (editing)
     return (
-      <li className="flex flex-wrap items-center gap-2 rounded-[12px] bg-[#f7f8fb] p-2">
+      <li className="flex flex-wrap items-center gap-2 rounded-[12px] bg-[#f6efe2] p-2">
         <Input value={title} onChange={(e) => setTitle(e.target.value)} aria-label="Milestone title" className="min-w-40 flex-1" autoFocus onKeyDown={(e) => e.key === "Enter" && save()} />
         <Input type="date" value={due} onChange={(e) => setDue(e.target.value)} aria-label="Milestone due date" className="w-40" />
         <Button size="sm" onClick={save}>Save</Button>
@@ -62,7 +62,7 @@ function MilestoneItem({ m, today }: { m: GoalMilestone; today: string }) {
       </li>
     );
   return (
-    <li className="group flex items-center gap-3 rounded-[12px] px-2 py-2 hover:bg-[#f7f8fb]">
+    <li className="group flex items-center gap-3 rounded-[12px] px-2 py-2 hover:bg-[#f6efe2]">
       <Checkbox checked={!!m.completedAt} onCheckedChange={(c) => actions.setMilestoneDone(m.id, c === true)} aria-label={m.completedAt ? `Mark “${m.title}” as not done` : `Complete milestone “${m.title}”`} />
       <div className="min-w-0 flex-1">
         <p className={cn("text-[14px] font-medium", m.completedAt && "text-faint-foreground line-through")}>{m.title}</p>
@@ -117,7 +117,7 @@ function GoalDetail({ goal, onClose }: { goal: Goal; onClose: () => void }) {
       <div className="border-b border-border px-6 pt-6 pb-5 pr-14">
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <CategoryPill category={category} />
-          {goal.status !== "active" && <span className="rounded-full bg-[#f1f2f7] px-2 py-0.5 text-xs font-medium capitalize text-subtle-foreground">{goal.status}</span>}
+          {goal.status !== "active" && <span className="rounded-full bg-[#efe6d5] px-2 py-0.5 text-xs font-medium capitalize text-subtle-foreground">{goal.status}</span>}
         </div>
         <SheetTitle className="text-xl font-semibold tracking-[-0.01em]">{goal.title}</SheetTitle>
         <SheetDescription className="mt-1 text-sm text-muted-foreground">{goal.description || targetLabel(goal, today)}</SheetDescription>
@@ -198,7 +198,7 @@ function GoalDetail({ goal, onClose }: { goal: Goal; onClose: () => void }) {
             <ul className="grid gap-1.5">
               {gHabits.map((h) => (
                 <li key={h.id}>
-                  <Link href={`${href("habits")}?habit=${h.id}`} className="flex items-center gap-2.5 rounded-[10px] px-2 py-1.5 text-sm hover:bg-[#f7f8fb]">
+                  <Link href={`${href("habits")}?habit=${h.id}`} className="flex items-center gap-2.5 rounded-[10px] px-2 py-1.5 text-sm hover:bg-[#f6efe2]">
                     <Repeat className="size-4 text-ink-green" aria-hidden />
                     <span className="flex-1">{h.name}</span>
                     <span className="text-[12px] text-muted-foreground">{scheduleLabel(h)}</span>
@@ -214,7 +214,7 @@ function GoalDetail({ goal, onClose }: { goal: Goal; onClose: () => void }) {
             <ul className="grid gap-1.5">
               {gNotes.map((n) => (
                 <li key={n.id}>
-                  <Link href={`${href("notes")}?note=${n.id}`} className="flex items-center gap-2.5 rounded-[10px] px-2 py-1.5 text-sm hover:bg-[#f7f8fb]">
+                  <Link href={`${href("notes")}?note=${n.id}`} className="flex items-center gap-2.5 rounded-[10px] px-2 py-1.5 text-sm hover:bg-[#f6efe2]">
                     <FileText className="size-4 text-muted-foreground" aria-hidden />
                     {n.title || "Untitled note"}
                   </Link>
@@ -298,7 +298,7 @@ function GoalCard({ goal, onOpen }: { goal: Goal; onOpen: () => void }) {
             )}
           </div>
           {p.nextMilestone && goal.status === "active" && (
-            <p className="mt-3 truncate rounded-[10px] bg-[#f7f8fb] px-3 py-2 text-[12.5px]">
+            <p className="mt-3 truncate rounded-[10px] bg-[#f6efe2] px-3 py-2 text-[12.5px]">
               <Flag className="mr-1.5 inline size-3.5 text-primary-strong" aria-hidden />
               Next: {p.nextMilestone.title}
             </p>
@@ -355,7 +355,7 @@ export function GoalsView() {
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {upcoming.map(({ milestone, goal }) => (
               <li key={milestone.id}>
-                <button type="button" onClick={() => setOpenId(goal.id)} className="w-full rounded-[12px] bg-[#f7f8fb] px-3 py-2.5 text-left hover:bg-[#f1f2f7]">
+                <button type="button" onClick={() => setOpenId(goal.id)} className="w-full rounded-[12px] bg-[#f6efe2] px-3 py-2.5 text-left hover:bg-[#efe6d5]">
                   <p className="text-[12px] font-medium text-primary-strong">{relativeDayLabel(milestone.dueDate!, today)}</p>
                   <p className="truncate text-[14px] font-medium">{milestone.title}</p>
                   <p className="truncate text-[12px] text-muted-foreground">{goal.title}</p>

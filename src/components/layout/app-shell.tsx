@@ -7,6 +7,8 @@ import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { ComposerProvider } from "./composer";
 import { DemoBanner } from "./demo-banner";
+import { PageTips } from "./page-tips";
+import { BottomNav } from "./bottom-nav";
 
 /** Chrome around every workspace page. Rendered only once data is loaded. */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -21,10 +23,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="flex min-h-dvh flex-col lg:pl-[240px]">
             <DemoBanner />
             <Header />
-            <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1240px] min-w-0 flex-1 px-4 pt-6 pb-16 outline-none sm:px-6 lg:px-8 lg:pt-8">
+            <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1240px] min-w-0 flex-1 px-4 pt-6 pb-28 outline-none lg:pb-16 sm:px-6 lg:px-8 lg:pt-8">
+              <PageTips />
               {children}
             </main>
           </div>
+          <BottomNav />
         </ComposerProvider>
       </TooltipProvider>
     </DataGate>

@@ -56,7 +56,7 @@ export function WeeklyActivityCard() {
               <CartesianGrid vertical={false} stroke={GRID} />
               <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: AXIS.stroke }} tick={AXIS.tick} />
               <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={AXIS.tick} width={48} />
-              <Tooltip cursor={{ fill: "#f3f4f8", radius: 8 }} content={<ChartTooltip />} />
+              <Tooltip cursor={{ fill: "#f1e9da", radius: 8 }} content={<ChartTooltip />} />
               <Bar dataKey="tasks" name="Tasks completed" fill={SERIES.lavender} radius={[4, 4, 0, 0]} maxBarSize={18} />
               <Bar dataKey="habits" name="Habits done" fill={SERIES.teal} radius={[4, 4, 0, 0]} maxBarSize={18} />
             </BarChart>

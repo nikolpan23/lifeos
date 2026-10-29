@@ -40,7 +40,7 @@ function History({ habit }: { habit: Habit }) {
                 <span
                   key={d}
                   title={`${formatLocalDate(d, { weekday: "short", month: "short", day: "numeric" })}${done.has(d) ? " · done" : scheduled && !future ? " · not done" : ""}`}
-                  className={cn("size-3 rounded-[3px]", future ? "bg-transparent" : done.has(d) ? "bg-[#1f9e86]" : scheduled ? "bg-[#e6e8ef]" : "bg-[#f4f5f8]")}
+                  className={cn("size-3 rounded-[3px]", future ? "bg-transparent" : done.has(d) ? "bg-[#5e8a4a]" : scheduled ? "bg-[#e4d9c6]" : "bg-[#f2eadb]")}
                 />
               );
             })}
@@ -68,7 +68,7 @@ function HabitRow({ habit, weekStart, focus }: { habit: Habit; weekStart: string
   const interactive = habit.status === "active";
 
   return (
-    <Card className={cn("p-4 sm:p-5", focus && "ring-2 ring-[#d9d4ff]")}>
+    <Card className={cn("p-4 sm:p-5", focus && "ring-2 ring-[#e6c7aa]")}>
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-[13px]", s.soft, s.text)}>
@@ -102,9 +102,9 @@ function HabitRow({ habit, weekStart, focus }: { habit: Habit; weekStart: string
                   className={cn(
                     "flex size-9 items-center justify-center rounded-full border transition-all duration-150 active:scale-90 disabled:cursor-default",
                     cell.done
-                      ? "border-transparent bg-[#1f9e86] text-white"
+                      ? "border-transparent bg-[#5e8a4a] text-white"
                       : cell.scheduled && !cell.future
-                        ? "border-border-strong bg-surface hover:border-[#1f9e86] hover:bg-soft-green"
+                        ? "border-border-strong bg-surface hover:border-[#5e8a4a] hover:bg-soft-green"
                         : "border-dashed border-border bg-transparent",
                     cell.date === today && !cell.done && "border-accent ring-2 ring-accent/20",
                   )}

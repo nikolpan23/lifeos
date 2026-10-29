@@ -11,7 +11,7 @@ export function Tooltip({ content, children, side = "top" }: { content: React.Re
     <TooltipPrimitive.Root delayDuration={250}>
       <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
       <TooltipPrimitive.Portal>
-        <TooltipPrimitive.Content side={side} sideOffset={6} className={cn("z-50 max-w-64 rounded-[9px] bg-[#24283b] px-2.5 py-1.5 text-xs text-white shadow-lift data-[state=delayed-open]:animate-[pop-in_120ms_ease-out]")}>
+        <TooltipPrimitive.Content side={side} sideOffset={6} className={cn("z-50 max-w-64 rounded-[9px] bg-[#2e2a24] px-2.5 py-1.5 text-xs text-white shadow-lift data-[state=delayed-open]:animate-[pop-in_120ms_ease-out]")}>
           {content}
         </TooltipPrimitive.Content>
       </TooltipPrimitive.Portal>

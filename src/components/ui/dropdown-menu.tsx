@@ -25,7 +25,7 @@ export function DropdownMenuItem({ className, destructive, ...props }: React.Com
   return (
     <Menu.Item
       className={cn(
-        "flex cursor-pointer items-center gap-2.5 rounded-[9px] px-2.5 py-2 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-[#f3f4f8] [&_svg]:size-4 [&_svg]:text-muted-foreground",
+        "flex cursor-pointer items-center gap-2.5 rounded-[9px] px-2.5 py-2 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-[#f1e9da] [&_svg]:size-4 [&_svg]:text-muted-foreground",
         destructive && "text-danger data-[highlighted]:bg-soft-rose [&_svg]:text-danger",
         className,
       )}

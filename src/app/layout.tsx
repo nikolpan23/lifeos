@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Figtree, Fraunces } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const body = Figtree({ variable: "--font-body", subsets: ["latin"] });
+const serif = Fraunces({ variable: "--font-serif", subsets: ["latin"], axes: ["opsz", "SOFT"] });
 
 export const metadata: Metadata = {
   title: { default: "LifeOS — Your life, beautifully organized", template: "%s · LifeOS" },
@@ -13,18 +13,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F8F9FC",
+  themeColor: "#F5EFE3",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-theme="light" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" data-theme="light" className={`${body.variable} ${serif.variable} h-full antialiased`}>
       <body className="min-h-full">
         {children}
         <Toaster
           position="bottom-right"
+          mobileOffset={{ bottom: 84 }}
           toastOptions={{
             classNames: {
               toast: "!rounded-[14px] !border !border-border !bg-surface !text-foreground !shadow-lift !font-sans",

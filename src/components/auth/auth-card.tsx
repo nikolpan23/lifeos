@@ -5,7 +5,7 @@ import { Logo } from "@/components/shared/logo";
 export function AuthCard({ title, description, children, footer }: { title: string; description: string; children: ReactNode; footer?: ReactNode }) {
   return (
     <div className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-background px-4 py-12">
-      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,#ecebff,transparent)]" />
+      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,#f1dfcc,transparent)]" />
       <main className="relative w-full max-w-[420px]">
         <Link href="/" aria-label="LifeOS home" className="mx-auto mb-6 block w-fit">
           <Logo />

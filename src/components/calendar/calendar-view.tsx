@@ -224,7 +224,7 @@ export function CalendarView() {
               {label}
             </h2>
             <label className="flex items-center gap-2 text-[13px] text-subtle-foreground">
-              <input type="checkbox" checked={showTasks} onChange={(e) => setShowTasks(e.target.checked)} className="size-4 accent-[#6e64d6]" /> Show tasks
+              <input type="checkbox" checked={showTasks} onChange={(e) => setShowTasks(e.target.checked)} className="size-4 accent-[#a8532f]" /> Show tasks
             </label>
             <Tabs value={view} onValueChange={(v) => setView(v as View)}>
               <TabsList aria-label="Calendar view">
@@ -290,7 +290,7 @@ export function CalendarView() {
               <ol className="grid gap-1">
                 {agenda.timed.map((e) => (
                   <li key={e.id}>
-                    <button type="button" onClick={() => composer.openEvent(e)} className="flex w-full items-start gap-2.5 rounded-[10px] px-2 py-2 text-left hover:bg-[#f7f8fb]">
+                    <button type="button" onClick={() => composer.openEvent(e)} className="flex w-full items-start gap-2.5 rounded-[10px] px-2 py-2 text-left hover:bg-[#f6efe2]">
                       <CategoryDot category={categories.find((c) => c.id === e.categoryId)} className="mt-1.5" />
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-1.5 text-[13.5px] font-medium">
@@ -321,7 +321,7 @@ export function CalendarView() {
                 <ul className="grid gap-1">
                   {agenda.due.map((t) => (
                     <li key={t.id}>
-                      <button type="button" onClick={() => composer.openTask(t)} className="flex w-full items-center gap-2 rounded-[10px] px-2 py-1.5 text-left text-[13px] hover:bg-[#f7f8fb]">
+                      <button type="button" onClick={() => composer.openTask(t)} className="flex w-full items-center gap-2 rounded-[10px] px-2 py-1.5 text-left text-[13px] hover:bg-[#f6efe2]">
                         <CheckCircle2 className="size-3.5 text-primary-strong" aria-hidden />
                         <span className="truncate">{t.title}</span>
                         {t.dueTime && <span className="ml-auto shrink-0 text-[12px] text-muted-foreground">{t.dueTime}</span>}

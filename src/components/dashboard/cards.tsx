@@ -29,13 +29,13 @@ function Ring({ value, size = 112, stroke = 10 }: { value: number; size?: number
   const reduce = useReducedMotion();
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden className="-rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e6e2ff" strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#efd9c4" strokeWidth={stroke} />
       <motion.circle
         cx={size / 2}
         cy={size / 2}
         r={r}
         fill="none"
-        stroke="#8b82e8"
+        stroke="#c26a45"
         strokeWidth={stroke}
         strokeLinecap="round"
         strokeDasharray={c}
@@ -69,7 +69,7 @@ export function TodayProgressCard() {
   const pct = Math.round(p.ratio * 100);
   const message = p.total === 0 ? "A clear day. Add something, or enjoy it." : pct === 100 ? "Everything for today is done. Lovely work." : pct >= 50 ? "More than halfway there." : p.tasksDone + p.habitsDone > 0 ? "Good start. Keep the momentum gentle." : "Fresh day, fresh start.";
   return (
-    <Card className="border-[#e6e2ff] bg-lavender/70 shadow-none">
+    <Card className="border-[#efd9c4] bg-lavender/70 shadow-none">
       <CardContent className="flex items-center gap-5 p-5">
         <div className="relative shrink-0">
           <Ring value={p.ratio} />
@@ -221,7 +221,7 @@ export function ScheduleCard() {
                   <button
                     type="button"
                     onClick={() => composer.openEvent(e)}
-                    className={cn("flex w-full items-stretch gap-3 rounded-[12px] p-2 text-left transition-colors hover:bg-[#f7f8fb]", past && "opacity-55")}
+                    className={cn("flex w-full items-stretch gap-3 rounded-[12px] p-2 text-left transition-colors hover:bg-[#f6efe2]", past && "opacity-55")}
                   >
                     <span className="w-[68px] shrink-0 pt-0.5 text-[12.5px] font-medium text-muted-foreground tabular-nums">{formatTime(e.start, tz)}</span>
                     <span className={cn("w-1 shrink-0 rounded-full", s.dot)} aria-hidden />
@@ -316,10 +316,10 @@ export function HabitsTodayCard() {
                     onClick={() => actions.toggleHabit(h.id, today)}
                     className={cn(
                       "flex w-full items-center gap-3 rounded-[14px] border p-3 text-left transition-all duration-200 active:scale-[0.98]",
-                      done ? "border-transparent bg-soft-green" : "border-border bg-surface hover:border-border-strong hover:bg-[#fafbfd]",
+                      done ? "border-transparent bg-soft-green" : "border-border bg-surface hover:border-border-strong hover:bg-[#fcf6ec]",
                     )}
                   >
-                    <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-full transition-colors", done ? "bg-[#5fbf8a] text-white" : cn(s.soft, s.text))}>
+                    <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-full transition-colors", done ? "bg-[#8fae7a] text-white" : cn(s.soft, s.text))}>
                       <AnimatePresence mode="wait" initial={false}>
                         {done ? (
                           <motion.span key="d" initial={reduce ? false : { scale: 0.4 }} animate={{ scale: 1 }} exit={{ scale: 0.4, opacity: 0 }}>

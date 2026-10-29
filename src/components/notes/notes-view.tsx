@@ -12,6 +12,7 @@ import { useActions, useLife } from "@/lib/data/store";
 import { matchesQuery } from "@/lib/domain/tasks";
 import { tagSchema } from "@/lib/domain/schemas";
 import { plainExcerpt, renderMarkdown } from "@/lib/markdown";
+import { isEmptyNote } from "@/lib/domain/notes";
 import { ValidationError } from "@/lib/data/actions";
 import type { Note } from "@/lib/domain/types";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,8 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
   const [preview, setPreview] = useState(false);
   const [state, setState] = useState<SaveState>("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
   const latest = useRef({ title, body, tags, goalId, taskId });
   useLayoutEffect(() => {
     latest.current = { title, body, tags, goalId, taskId };
@@ -68,8 +71,18 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
     timer.current = setTimeout(flush, 700);
   }, [flush]);
 
-  // Save pending edits when switching notes or leaving the page.
+  // A fresh note opens ready to type into.
   useEffect(() => {
+    if (isEmptyNote(note)) titleRef.current?.focus();
+    // Only on open.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save pending edits when switching notes or leaving the page.
+  // A note left completely blank is thrown away instead of saved.
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       if (timer.current) {
         e.preventDefault();
@@ -78,9 +91,17 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", onBeforeUnload);
-      if (timer.current) void flush();
+      mounted.current = false;
+      if (isEmptyNote(latest.current)) {
+        if (timer.current) clearTimeout(timer.current);
+        timer.current = null;
+        // Deferred so a quick remount (React dev mode) doesn't discard the note in use.
+        setTimeout(() => {
+          if (!mounted.current) void actions.discardEmptyNotes([note.id]);
+        }, 0);
+      } else if (timer.current) void flush();
     };
-  }, [flush]);
+  }, [flush, actions, note.id]);
 
   const addTag = () => {
     const parsed = tagSchema.safeParse(tagDraft);
@@ -125,7 +146,7 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
           )}
           {state === "idle" && `Edited ${relativeTime(note.updatedAt)}`}
         </div>
-        <div className="flex rounded-[10px] bg-[#f1f2f7] p-0.5" role="group" aria-label="Editor mode">
+        <div className="flex rounded-[10px] bg-[#efe6d5] p-0.5" role="group" aria-label="Editor mode">
           <button type="button" aria-pressed={!preview} onClick={() => setPreview(false)} className={cn("inline-flex h-7 items-center gap-1 rounded-[8px] px-2.5 text-[12.5px] font-medium", !preview ? "bg-surface shadow-sm" : "text-subtle-foreground")}>
             <Pencil className="size-3.5" aria-hidden /> Write
           </button>
@@ -148,7 +169,8 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
           onClick={async () => {
             if (timer.current) clearTimeout(timer.current);
             timer.current = null;
-            if (await actions.deleteNote(note.id)) onBack();
+            const ok = isEmptyNote(latest.current) ? await actions.discardEmptyNotes([note.id]) : await actions.deleteNote(note.id);
+            if (ok) onBack();
           }}
         >
           <Trash2 />
@@ -160,12 +182,19 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
         </label>
         <input
           id="note-title"
+          ref={titleRef}
           value={title}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              bodyRef.current?.focus();
+            }
+          }}
           onChange={(e) => {
             setTitle(e.target.value);
             schedule();
           }}
-          placeholder="Untitled note"
+          placeholder="Give it a title"
           maxLength={200}
           className="w-full bg-transparent text-[24px] font-semibold tracking-[-0.02em] outline-none placeholder:text-faint-foreground"
         />
@@ -244,19 +273,25 @@ function NoteEditor({ note, onBack }: { note: Note; onBack: () => void }) {
             )
           ) : (
             <Textarea
+              ref={bodyRef}
               value={body}
               onChange={(e) => {
                 setBody(e.target.value);
                 schedule();
               }}
               aria-label="Note body (Markdown supported)"
-              placeholder={"Start writing… Markdown works: **bold**, - lists, ## headings, [links](https://…)"}
-              className="min-h-[340px] resize-y border-none bg-transparent px-0 font-[450] shadow-none focus-visible:ring-0"
+              placeholder="Click here and start writing…"
+              className="note-paper min-h-[340px] resize-y rounded-[14px] border border-dashed border-border-strong px-4 py-3 font-[450] shadow-none focus-visible:border-solid focus-visible:border-accent focus-visible:ring-0"
               maxLength={100_000}
             />
           )}
         </div>
-        <p className="mt-3 text-right text-[12px] text-faint-foreground">{words} word{words === 1 ? "" : "s"}</p>
+        <p className="mt-3 flex flex-wrap justify-between gap-2 text-[12px] text-faint-foreground">
+          <span>Tip: **bold**, - lists and ## headings work. Switch to Preview to see them.</span>
+          <span>
+            {words} word{words === 1 ? "" : "s"}
+          </span>
+        </p>
       </div>
     </div>
   );
@@ -289,13 +324,22 @@ export function NotesView() {
     if (noteParam) router.replace(window.location.pathname, { scroll: false });
   }, [noteParam, router]);
 
+  // Tidy up blank notes left behind earlier (for example by closing the tab mid-way).
+  const cleaned = useRef(false);
+  useEffect(() => {
+    if (cleaned.current) return;
+    cleaned.current = true;
+    const blanks = notes.filter((n) => isEmptyNote(n) && n.id !== noteParam).map((n) => n.id);
+    if (blanks.length) void actions.discardEmptyNotes(blanks);
+  }, [notes, noteParam, actions]);
+
   const allTags = useMemo(() => [...new Set(notes.filter((n) => n.archived === showArchived).flatMap((n) => n.tags))].sort(), [notes, showArchived]);
   const list = useMemo(
     () =>
       notes
-        .filter((n) => n.archived === showArchived && (!tag || n.tags.includes(tag)) && matchesQuery(`${n.title} ${n.body} ${n.tags.join(" ")}`, query))
+        .filter((n) => n.archived === showArchived && (n.id === selectedId || !isEmptyNote(n)) && (!tag || n.tags.includes(tag)) && matchesQuery(`${n.title} ${n.body} ${n.tags.join(" ")}`, query))
         .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.updatedAt.localeCompare(a.updatedAt)),
-    [notes, showArchived, tag, query],
+    [notes, showArchived, tag, query, selectedId],
   );
   const selected = notes.find((n) => n.id === selectedId) ?? null;
 
@@ -341,7 +385,7 @@ export function NotesView() {
             </div>
           </div>
           {list.length === 0 ? (
-            <EmptyState icon={FileText} title={query || tag ? "No matching notes" : showArchived ? "No archived notes" : "No notes yet"} description={query || tag ? "Try another search or tag." : showArchived ? "Archived notes are kept here." : "Jot down an idea, a plan, or a list."} action={!showArchived && !query ? <Button size="sm" variant="soft" onClick={create}><Plus /> New note</Button> : undefined} />
+            <EmptyState icon={FileText} title={query || tag ? "No matching notes" : showArchived ? "No archived notes" : "No notes yet"} description={query || tag ? "Try another search or tag." : showArchived ? "Archived notes are kept here." : "Press New note, type a title and write. It saves by itself."} action={!showArchived && !query ? <Button size="sm" variant="soft" onClick={create}><Plus /> New note</Button> : undefined} />
           ) : (
             <ul className="flex-1 overflow-y-auto p-2" aria-label="Notes">
               {list.map((n) => (
@@ -353,13 +397,13 @@ export function NotesView() {
                       setSelectedId(n.id);
                       setMobileEditing(true);
                     }}
-                    className={cn("w-full rounded-[12px] px-3 py-2.5 text-left transition-colors", n.id === selectedId ? "bg-lavender" : "hover:bg-[#f7f8fb]")}
+                    className={cn("w-full rounded-[12px] px-3 py-2.5 text-left transition-colors", n.id === selectedId ? "bg-lavender" : "hover:bg-[#f6efe2]")}
                   >
                     <span className="flex items-center gap-1.5">
                       {n.pinned && <Pin className="size-3 shrink-0 text-primary-strong" aria-label="Pinned" />}
-                      <span className="truncate text-[14px] font-medium">{n.title || "Untitled note"}</span>
+                      <span className={cn("truncate text-[14px] font-medium", !n.title && "text-muted-foreground italic")}>{n.title || (isEmptyNote(n) ? "New note" : "Untitled note")}</span>
                     </span>
-                    <span className="mt-0.5 line-clamp-2 text-[12.5px] text-muted-foreground">{plainExcerpt(n.body) || "No content"}</span>
+                    <span className="mt-0.5 line-clamp-2 text-[12.5px] text-muted-foreground">{plainExcerpt(n.body) || (isEmptyNote(n) ? "Start typing on the right" : "No text yet")}</span>
                     <span className="mt-1 flex items-center gap-2 text-[11.5px] text-faint-foreground">
                       {relativeTime(n.updatedAt)}
                       {n.tags.slice(0, 2).map((t) => (
@@ -376,7 +420,17 @@ export function NotesView() {
           {selected ? (
             <NoteEditor key={selected.id} note={selected} onBack={() => setMobileEditing(false)} />
           ) : (
-            <EmptyState icon={FileText} title="Pick a note" description="Choose a note on the left, or start a new one." className="min-h-[60vh]" />
+            <EmptyState
+              icon={FileText}
+              title={list.length ? "Pick a note to read or edit" : "Your notebook is empty"}
+              description={list.length ? "Choose a note on the left, or start a new one." : "Notes are for ideas, plans, lists and anything worth remembering. You can link a note to a goal or task."}
+              action={
+                <Button size="sm" onClick={create}>
+                  <Plus /> New note
+                </Button>
+              }
+              className="min-h-[60vh]"
+            />
           )}
         </div>
       </Card>

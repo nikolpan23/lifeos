@@ -40,7 +40,7 @@ export function QuickAddTask({ dueToday = true, className, goalId = null }: { du
       <label htmlFor="quick-add-task" className="sr-only">
         Add a task
       </label>
-      <div className={cn("flex items-center gap-2.5 rounded-[12px] border border-dashed border-border-strong bg-[#fbfbfd] px-3 transition-colors focus-within:border-solid focus-within:border-accent focus-within:bg-surface focus-within:ring-[3px] focus-within:ring-accent/20", error && "border-danger")}>
+      <div className={cn("flex items-center gap-2.5 rounded-[12px] border border-dashed border-border-strong bg-[#fdf8ef] px-3 transition-colors focus-within:border-solid focus-within:border-accent focus-within:bg-surface focus-within:ring-[3px] focus-within:ring-accent/20", error && "border-danger")}>
         <Plus className="size-4 text-faint-foreground" aria-hidden />
         <input
           id="quick-add-task"

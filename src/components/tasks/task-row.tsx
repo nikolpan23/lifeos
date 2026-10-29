@@ -34,8 +34,8 @@ export const TaskRow = memo(function TaskRow({ task, compact, highlight }: { tas
       exit={reduce ? undefined : { opacity: 0, height: 0, marginTop: 0, marginBottom: 0 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "group flex items-start gap-3 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-[#f7f8fb]",
-        highlight && "bg-lavender/60 ring-1 ring-[#d9d4ff]",
+        "group flex items-start gap-3 rounded-[12px] px-2.5 py-2.5 transition-colors hover:bg-[#f6efe2]",
+        highlight && "bg-lavender/60 ring-1 ring-[#e6c7aa]",
       )}
     >
       <Checkbox
@@ -47,7 +47,7 @@ export const TaskRow = memo(function TaskRow({ task, compact, highlight }: { tas
       />
       <div className="min-w-0 flex-1">
         <button type="button" onClick={() => composer.openTask(task)} className="block w-full text-left">
-          <span className={cn("block text-[14.5px] leading-snug font-medium transition-colors", done && "text-faint-foreground line-through decoration-[#c9cedb]")}>{task.title}</span>
+          <span className={cn("block text-[14.5px] leading-snug font-medium transition-colors", done && "text-faint-foreground line-through decoration-[#cdbfa6]")}>{task.title}</span>
         </button>
         <div className={cn("mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-muted-foreground", compact && "mt-0.5")}>
           {task.dueDate && (

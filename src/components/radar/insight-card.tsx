@@ -11,9 +11,9 @@ import type { Insight, Severity } from "@/lib/radar/rules";
 import { cn } from "@/lib/utils";
 
 export const SEVERITY: Record<Severity, { label: string; icon: typeof Info; chip: string; bar: string }> = {
-  critical: { label: "Needs attention", icon: AlertOctagon, chip: "bg-soft-rose text-ink-rose", bar: "bg-[#d9587f]" },
-  warning: { label: "Heads up", icon: AlertTriangle, chip: "bg-soft-peach text-ink-peach", bar: "bg-[#e8763f]" },
-  info: { label: "Worth knowing", icon: Info, chip: "bg-soft-blue text-ink-blue", bar: "bg-[#3a86d4]" },
+  critical: { label: "Needs attention", icon: AlertOctagon, chip: "bg-soft-rose text-ink-rose", bar: "bg-[#b5564d]" },
+  warning: { label: "Heads up", icon: AlertTriangle, chip: "bg-soft-peach text-ink-peach", bar: "bg-[#c7743f]" },
+  info: { label: "Worth knowing", icon: Info, chip: "bg-soft-blue text-ink-blue", bar: "bg-[#4f7f99]" },
 };
 
 
@@ -52,7 +52,7 @@ export function InsightCard({ insight, compact, onPlan }: { insight: Insight; co
       {!compact && insight.related.length > 0 && (
         <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Related">
           {insight.related.slice(0, 6).map((r) => (
-            <li key={`${r.type}-${r.id}`} className="max-w-56 truncate rounded-full bg-[#f3f4f8] px-2 py-0.5 text-[12px] text-subtle-foreground">
+            <li key={`${r.type}-${r.id}`} className="max-w-56 truncate rounded-full bg-[#f1e9da] px-2 py-0.5 text-[12px] text-subtle-foreground">
               <span className="text-faint-foreground capitalize">{r.type}:</span> {r.label}
             </li>
           ))}
@@ -77,7 +77,7 @@ export function InsightCard({ insight, compact, onPlan }: { insight: Insight; co
           </button>
         )}
       </div>
-      {open && <p className="mt-2 rounded-[10px] bg-[#f7f8fb] px-3 py-2 text-[12.5px] text-subtle-foreground">{insight.basis} Calculated from what you’ve entered in LifeOS, nothing else.</p>}
+      {open && <p className="mt-2 rounded-[10px] bg-[#f6efe2] px-3 py-2 text-[12.5px] text-subtle-foreground">{insight.basis} Calculated from what you’ve entered in LifeOS, nothing else.</p>}
     </article>
   );
 }

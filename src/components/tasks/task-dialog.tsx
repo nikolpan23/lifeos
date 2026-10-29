@@ -14,9 +14,9 @@ import { ValidationError } from "@/lib/data/actions";
 import { cn } from "@/lib/utils";
 
 const PRIORITY_OPTIONS = [
-  { value: "low", label: "Low", cls: "data-[on=true]:bg-soft-blue data-[on=true]:text-ink-blue data-[on=true]:border-[#cfe2fb]" },
-  { value: "medium", label: "Medium", cls: "data-[on=true]:bg-soft-yellow data-[on=true]:text-ink-yellow data-[on=true]:border-[#f4e3ae]" },
-  { value: "high", label: "High", cls: "data-[on=true]:bg-soft-rose data-[on=true]:text-ink-rose data-[on=true]:border-[#f6cdd6]" },
+  { value: "low", label: "Low", cls: "data-[on=true]:bg-soft-blue data-[on=true]:text-ink-blue data-[on=true]:border-[#d6e3ea]" },
+  { value: "medium", label: "Medium", cls: "data-[on=true]:bg-soft-yellow data-[on=true]:text-ink-yellow data-[on=true]:border-[#f1e0b0]" },
+  { value: "high", label: "High", cls: "data-[on=true]:bg-soft-rose data-[on=true]:text-ink-rose data-[on=true]:border-[#f0d0ca]" },
 ] as const;
 
 function defaults(task?: Task | null, preset?: Partial<TaskFormValues>): TaskFormValues {
@@ -81,7 +81,7 @@ export function TaskDialog({ open, onOpenChange, task, preset }: { open: boolean
                     aria-checked={priority === p.value}
                     data-on={priority === p.value}
                     onClick={() => setValue("priority", p.value, { shouldDirty: true })}
-                    className={cn("h-9 flex-1 rounded-[10px] border border-border text-sm font-medium text-subtle-foreground transition-colors hover:bg-[#f6f7fa]", p.cls)}
+                    className={cn("h-9 flex-1 rounded-[10px] border border-border text-sm font-medium text-subtle-foreground transition-colors hover:bg-[#f5eee1]", p.cls)}
                   >
                     {p.label}
                   </button>

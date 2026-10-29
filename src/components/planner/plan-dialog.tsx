@@ -126,7 +126,7 @@ export function PlanDialog({ open, onOpenChange, date, isToday }: { open: boolea
                 </details>
               )}
               {(plan.notes.length > 0 || plan.aiNote) && (
-                <div className="flex gap-2.5 rounded-[12px] bg-[#f7f8fb] px-3 py-2.5 text-[12.5px] text-subtle-foreground">
+                <div className="flex gap-2.5 rounded-[12px] bg-[#f6efe2] px-3 py-2.5 text-[12.5px] text-subtle-foreground">
                   <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
                   <ul className="grid gap-0.5">
                     {[...plan.notes, ...(plan.aiNote ? [plan.aiNote] : [])].map((n) => (

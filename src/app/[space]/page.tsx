@@ -5,8 +5,9 @@ import { GoalsCard, HabitsTodayCard, ScheduleCard, TasksTodayCard, TodayProgress
 import { WeeklyActivityCard } from "@/components/dashboard/weekly-activity";
 import { RadarCard } from "@/components/dashboard/radar-card";
 import { PlanCard } from "@/components/planner/plan-card";
+import { GettingStartedCard } from "@/components/dashboard/getting-started";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export const metadata: Metadata = { title: "Today" };
 
 export default function DashboardPage() {
   return (
@@ -19,6 +20,7 @@ export default function DashboardPage() {
           <TodayProgressCard />
         </div>
       </div>
+      <GettingStartedCard />
       <div className="grid gap-5 lg:grid-cols-12">
         <div className="grid content-start gap-5 lg:col-span-7">
           <TasksTodayCard />

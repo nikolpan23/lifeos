@@ -137,7 +137,7 @@ export function Onboarding({ uid }: { uid: string }) {
         <ol className="mb-4 flex gap-2" aria-label="Setup progress">
           {STEPS.map((label, i) => (
             <li key={label} className="flex-1">
-              <div className={cn("h-1.5 rounded-full", i <= step ? "bg-primary" : "bg-[#e3e5ee]")} />
+              <div className={cn("h-1.5 rounded-full", i <= step ? "bg-primary" : "bg-[#e4d9c6]")} />
               <span className={cn("mt-1.5 block text-[12px]", i === step ? "font-medium text-foreground" : "text-muted-foreground")} aria-current={i === step ? "step" : undefined}>
                 {label}
               </span>
@@ -193,7 +193,7 @@ export function Onboarding({ uid }: { uid: string }) {
                       onClick={() => setChosen((c) => c.map((v, j) => (j === i ? !v : v)))}
                       className={cn(
                         "inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[14px] transition-colors",
-                        on ? "border-transparent bg-lavender font-medium text-primary-strong" : "border-border bg-surface text-subtle-foreground hover:bg-[#f4f5f9]",
+                        on ? "border-transparent bg-lavender font-medium text-primary-strong" : "border-border bg-surface text-subtle-foreground hover:bg-[#f2eadb]",
                       )}
                     >
                       {on ? <Check className="size-3.5" aria-hidden /> : <span className={cn("size-2 rounded-full", CATEGORY_STYLES[p.color].dot)} aria-hidden />}

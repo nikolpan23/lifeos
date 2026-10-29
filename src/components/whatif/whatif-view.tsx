@@ -85,7 +85,7 @@ function MetricCard({ label, before, after, unit, betterWhen, format, icon: Icon
         <Icon className="size-3.5" aria-hidden /> {label}
       </p>
       <p className="mt-2 flex items-baseline gap-2">
-        <span className="text-[13px] text-faint-foreground line-through decoration-[#d4d8e3]" aria-label={`Before: ${f(before)}`}>{f(before)}</span>
+        <span className="text-[13px] text-faint-foreground line-through decoration-[#d8ccb6]" aria-label={`Before: ${f(before)}`}>{f(before)}</span>
         <ArrowRight className="size-3 text-faint-foreground" aria-hidden />
         <span className="text-[22px] font-semibold tracking-tight" aria-label={`After: ${f(after)}`}>{f(after)}</span>
       </p>
@@ -144,7 +144,7 @@ function Comparison({ sim }: { sim: SimulationResult }) {
                   <CartesianGrid vertical={false} stroke={GRID} />
                   <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: AXIS.stroke }} tick={AXIS.tick} interval="preserveStartEnd" minTickGap={8} />
                   <YAxis tickLine={false} axisLine={false} tick={AXIS.tick} width={48} unit="h" />
-                  <Tooltip cursor={{ fill: "#f3f4f8", radius: 8 }} content={<ChartTooltip format={(v) => `${v} h`} />} />
+                  <Tooltip cursor={{ fill: "#f1e9da", radius: 8 }} content={<ChartTooltip format={(v) => `${v} h`} />} />
                   <Bar dataKey="before" name="Before" fill={SERIES.blue} radius={[4, 4, 0, 0]} maxBarSize={14} />
                   <Bar dataKey="after" name="After" fill={SERIES.lavender} radius={[4, 4, 0, 0]} maxBarSize={14} />
                 </BarChart>
@@ -230,13 +230,13 @@ function Comparison({ sim }: { sim: SimulationResult }) {
               {sim.horizon.map((d) => {
                 const evs = byDay.get(d) ?? [];
                 return (
-                  <li key={d} className={cn("w-[120px] shrink-0 rounded-[14px] border p-2.5", evs.length ? "border-[#e6e2ff] bg-[#faf9ff]" : "border-border bg-[#fbfbfd]")}>
+                  <li key={d} className={cn("w-[120px] shrink-0 rounded-[14px] border p-2.5", evs.length ? "border-[#efd9c4] bg-[#fbf3e8]" : "border-border bg-[#fdf8ef]")}>
                     <p className="text-[11.5px] font-semibold text-muted-foreground">
                       {weekdayShort(d)} {Number(d.slice(8))}
                     </p>
                     <ul className="mt-1.5 grid gap-1">
                       {evs.map((e) => (
-                        <li key={e.id} className="rounded-[8px] border border-dashed border-[#c9c3f5] bg-surface px-1.5 py-1 text-[11.5px] leading-tight">
+                        <li key={e.id} className="rounded-[8px] border border-dashed border-[#dcb69a] bg-surface px-1.5 py-1 text-[11.5px] leading-tight">
                           <span className="block truncate font-medium text-primary-strong">{e.title}</span>
                           <span className="text-muted-foreground">{e.allDay ? "All day" : `${formatTime(e.start, tz)}`}</span>
                         </li>
@@ -251,7 +251,7 @@ function Comparison({ sim }: { sim: SimulationResult }) {
         </Card>
       )}
 
-      <div className="flex gap-3 rounded-[16px] bg-[#f3f4f8] px-4 py-3.5 text-[13px] leading-relaxed text-subtle-foreground">
+      <div className="flex gap-3 rounded-[16px] bg-[#f1e9da] px-4 py-3.5 text-[13px] leading-relaxed text-subtle-foreground">
         <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
         <div>
           <p className="font-medium text-foreground">How this was estimated</p>
@@ -323,7 +323,7 @@ function ScenarioEditor({ scenario }: { scenario: Scenario }) {
           {scenario.changes.map((c) => {
             const Icon = changeIcon(c.type);
             return (
-              <div key={c.id} className="flex items-center gap-3 rounded-[14px] border border-dashed border-[#d9d4ff] bg-[#faf9ff] px-3 py-2.5">
+              <div key={c.id} className="flex items-center gap-3 rounded-[14px] border border-dashed border-[#e6c7aa] bg-[#fbf3e8] px-3 py-2.5">
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-lavender text-primary-strong">
                   <Icon className="size-4" aria-hidden />
                 </span>
@@ -466,7 +466,7 @@ export function WhatIfView() {
                   type="button"
                   aria-current={s.id === selected?.id ? "true" : undefined}
                   onClick={() => setSelectedId(s.id)}
-                  className={cn("w-full rounded-[14px] border px-3 py-2.5 pr-10 text-left transition-colors", s.id === selected?.id ? "border-[#d9d4ff] bg-lavender" : "border-transparent hover:bg-surface")}
+                  className={cn("w-full rounded-[14px] border px-3 py-2.5 pr-10 text-left transition-colors", s.id === selected?.id ? "border-[#e6c7aa] bg-lavender" : "border-transparent hover:bg-surface")}
                 >
                   <span className="line-clamp-2 text-[13.5px] font-medium">{s.title}</span>
                   <span className="mt-0.5 block text-[12px] text-muted-foreground">

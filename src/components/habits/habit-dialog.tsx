@@ -76,7 +76,7 @@ export function HabitDialog({ open, onOpenChange, habit }: { open: boolean; onOp
                     role="radio"
                     aria-checked={frequency === f}
                     onClick={() => setValue("frequency", f)}
-                    className={cn("h-9 rounded-[10px] border text-sm font-medium transition-colors", frequency === f ? "border-[#d9d4ff] bg-lavender text-primary-strong" : "border-border text-subtle-foreground hover:bg-[#f6f7fa]")}
+                    className={cn("h-9 rounded-[10px] border text-sm font-medium transition-colors", frequency === f ? "border-[#e6c7aa] bg-lavender text-primary-strong" : "border-border text-subtle-foreground hover:bg-[#f5eee1]")}
                   >
                     {f === "daily" ? "Every day" : "Specific days"}
                   </button>
@@ -92,7 +92,7 @@ export function HabitDialog({ open, onOpenChange, habit }: { open: boolean; onOp
                         type="button"
                         aria-pressed={on}
                         onClick={() => setValue("days", on ? days.filter((x) => x !== d) : [...days, d], { shouldValidate: formState.isSubmitted })}
-                        className={cn("h-9 min-w-11 rounded-full border px-2 text-[13px] font-medium transition-colors", on ? "border-primary bg-primary text-white" : "border-border text-subtle-foreground hover:bg-[#f6f7fa]")}
+                        className={cn("h-9 min-w-11 rounded-full border px-2 text-[13px] font-medium transition-colors", on ? "border-primary bg-primary text-white" : "border-border text-subtle-foreground hover:bg-[#f5eee1]")}
                       >
                         {WEEKDAY_LABELS[d]}
                       </button>

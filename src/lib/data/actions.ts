@@ -1,5 +1,6 @@
 import { endOfLocalDay, startOfLocalDay, zonedToISO } from "@/lib/dates";
 import { completionId } from "@/lib/domain/habits";
+import { isEmptyNote } from "@/lib/domain/notes";
 import {
   categoryInput,
   eventInput,
@@ -233,6 +234,11 @@ export function createActions(apply: ApplyFn, get: () => LifeData) {
     async addNote(input: Partial<NoteInput> = {}) {
       const valid = parse(noteInput, { title: "", body: "", tags: [], goalId: null, taskId: null, ...input });
       assertLinks(get(), valid);
+      // Reuse a blank note instead of stacking up "Untitled note" entries.
+      if (isEmptyNote(valid)) {
+        const blank = get().notes.find((n) => !n.archived && isEmptyNote(n));
+        if (blank) return blank;
+      }
       const record: Note = { id: newId(), ...valid, pinned: false, archived: false, ...stamp() };
       const ok = await apply([{ type: "put", collection: "notes", record }]);
       return ok ? record : null;
@@ -248,6 +254,12 @@ export function createActions(apply: ApplyFn, get: () => LifeData) {
     },
     async deleteNote(id: string) {
       return apply([{ type: "delete", collection: "notes", id }], { success: "Note deleted" });
+    },
+    /** Quietly removes notes that were opened but never written in. */
+    async discardEmptyNotes(ids: string[]) {
+      const empty = new Set(get().notes.filter((n) => ids.includes(n.id) && isEmptyNote(n)).map((n) => n.id));
+      if (empty.size === 0) return true;
+      return apply([...empty].map((id) => ({ type: "delete" as const, collection: "notes" as const, id })));
     },
 
     /* ------------------------------- Events ------------------------------- */
