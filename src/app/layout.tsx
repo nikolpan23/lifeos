@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, Fraunces } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const body = Figtree({ variable: "--font-body", subsets: ["latin"] });
-const serif = Fraunces({ variable: "--font-serif", subsets: ["latin"], axes: ["opsz", "SOFT"] });
+// One family for headings and text; it includes Greek so notes and tasks typed in Greek match.
+const manrope = Manrope({ variable: "--font-body", subsets: ["latin", "greek"] });
 
 export const metadata: Metadata = {
   title: { default: "LifeOS — Your life, beautifully organized", template: "%s · LifeOS" },
@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-theme="light" className={`${body.variable} ${serif.variable} h-full antialiased`}>
+    <html lang="en" data-theme="light" className={`${manrope.variable} h-full antialiased`}>
       <body className="min-h-full">
         {children}
         <Toaster
