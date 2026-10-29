@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, CalendarClock, Check, ChevronDown, Flame, Lock, Radar, Sparkles, Target, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
+import { REVEAL_BOOT, RevealOnScroll } from "@/components/landing/reveal-on-scroll";
 
 const FEATURES = [
   {
@@ -89,6 +90,8 @@ function Screen({ src, alt, priority }: { src: string; alt: string; priority?: b
 export default function LandingPage() {
   return (
     <div className="min-h-dvh bg-background">
+      <script dangerouslySetInnerHTML={{ __html: REVEAL_BOOT }} />
+      <RevealOnScroll />
       <header className="sticky top-0 z-30 border-b border-transparent bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link href="/" aria-label="LifeOS home">
