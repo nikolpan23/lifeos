@@ -111,20 +111,20 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <main>
+      <main className="overflow-x-clip">
         <section className="relative overflow-hidden">
           <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-40 h-[520px] bg-[radial-gradient(60%_60%_at_50%_30%,#f3e3d3_0%,rgba(245,239,227,0)_70%)]" />
           <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-10 text-center sm:px-6 sm:pt-24">
-            <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#efd9c4] bg-surface px-3 py-1 text-[13px] font-medium text-primary-strong shadow-soft">
+            <p className="hero-in mx-auto inline-flex items-center gap-2 rounded-full border border-[#efd9c4] bg-surface px-3 py-1 text-[13px] font-medium text-primary-strong shadow-soft">
               <Sparkles className="size-3.5" aria-hidden /> Tasks, habits, goals, notes and calendar in one calm place
             </p>
-            <h1 className="mx-auto mt-6 max-w-3xl text-[40px] leading-[1.05] font-medium tracking-[-0.02em] text-balance sm:text-[60px]">
+            <h1 style={{ animationDelay: "120ms" }} className="hero-in mx-auto mt-6 max-w-3xl text-[40px] leading-[1.05] font-medium tracking-[-0.02em] text-balance sm:text-[60px]">
               Your life, beautifully organized.
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-[17px] leading-relaxed text-subtle-foreground text-balance sm:text-lg">
+            <p style={{ animationDelay: "240ms" }} className="hero-in mx-auto mt-5 max-w-2xl text-[17px] leading-relaxed text-subtle-foreground text-balance sm:text-lg">
               One intelligent space for your tasks, habits, goals, notes, and schedule. Plan better, see what matters, and make smarter decisions.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div style={{ animationDelay: "360ms" }} className="hero-in mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href="/signup">
                   Get Started <ArrowRight />
@@ -136,7 +136,7 @@ export default function LandingPage() {
             </div>
             <p className="mt-3 text-[13px] text-muted-foreground">The demo runs on sample data in your browser. No sign-up needed.</p>
           </div>
-          <div className="relative mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+          <div className="reveal-screen relative mx-auto max-w-6xl px-4 pb-20 sm:px-6">
             <Screen src="/screens/dashboard.png" alt="The LifeOS dashboard with today's tasks, schedule, habits, daily plan and Life Radar insights" priority />
           </div>
         </section>
@@ -149,9 +149,9 @@ export default function LandingPage() {
               { icon: Flame, t: "Gentle streaks", d: "Encouraging, never guilt-tripping" },
               { icon: Radar, t: "Life Radar", d: "Spots clashes and crunches" },
               { icon: Wand2, t: "What-If Studio", d: "Simulate before you commit" },
-            ].map((p) => (
-              <div key={p.t} className="flex items-center gap-3 bg-surface px-6 py-6">
-                <p.icon className="size-5 text-primary-strong" aria-hidden />
+            ].map((p, i) => (
+              <div key={p.t} className={`reveal-pop icon-host flex items-center gap-3 bg-surface px-6 py-6 ${i % 2 ? "reveal-late" : ""}`}>
+                <p.icon className={`size-5 text-primary-strong ${["anim-bob", "anim-beat", "anim-spin", "anim-twinkle"][i]}`} aria-hidden />
                 <div>
                   <p className="text-[15px] font-semibold">{p.t}</p>
                   <p className="text-[13px] text-muted-foreground">{p.d}</p>
@@ -164,7 +164,7 @@ export default function LandingPage() {
         {FEATURES.map((f, i) => (
           <section key={f.id} id={f.id} aria-labelledby={`${f.id}-title`} className="mx-auto max-w-6xl scroll-mt-20 px-4 py-20 sm:px-6">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-              <div className={i % 2 ? "lg:order-2" : ""}>
+              <div className={i % 2 ? "reveal-right lg:order-2" : "reveal-left"}>
                 <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-semibold ${f.tone}`}>
                   <f.icon className="size-3.5" aria-hidden /> {f.eyebrow}
                 </span>
@@ -183,7 +183,7 @@ export default function LandingPage() {
                   ))}
                 </ul>
               </div>
-              <div className={i % 2 ? "lg:order-1" : ""}>
+              <div className={i % 2 ? "reveal-left reveal-late lg:order-1" : "reveal-right reveal-late"}>
                 <Screen src={f.image} alt={f.alt} />
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
         ))}
 
         <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-          <div className="grid gap-6 rounded-[24px] border border-border bg-surface p-8 shadow-soft sm:p-10 md:grid-cols-[auto_1fr] md:items-center">
+          <div className="reveal grid gap-6 rounded-[24px] border border-border bg-surface p-8 shadow-soft sm:p-10 md:grid-cols-[auto_1fr] md:items-center">
             <div className="flex size-12 items-center justify-center rounded-[16px] bg-lavender text-primary-strong">
               <Lock className="size-5" aria-hidden />
             </div>
@@ -205,12 +205,12 @@ export default function LandingPage() {
         </section>
 
         <section id="faq" aria-labelledby="faq-title" className="mx-auto max-w-3xl scroll-mt-20 px-4 pb-24 sm:px-6">
-          <h2 id="faq-title" className="text-center text-[30px] font-semibold tracking-[-0.025em] sm:text-[36px]">
+          <h2 id="faq-title" className="reveal text-center text-[30px] font-semibold tracking-[-0.025em] sm:text-[36px]">
             Questions, answered
           </h2>
           <div className="mt-10 grid gap-3">
             {FAQ.map((item) => (
-              <details key={item.q} className="group rounded-[16px] border border-border bg-surface px-5 py-4 shadow-soft open:shadow-lift">
+              <details key={item.q} className="reveal group rounded-[16px] border border-border bg-surface px-5 py-4 shadow-soft open:shadow-lift">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[15.5px] font-medium [&::-webkit-details-marker]:hidden">
                   {item.q}
                   <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
@@ -222,7 +222,7 @@ export default function LandingPage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="rounded-[28px] bg-gradient-to-br from-lavender via-[#f6e9db] to-soft-blue px-6 py-14 text-center sm:px-12">
+          <div className="reveal-pop rounded-[28px] bg-gradient-to-br from-lavender via-[#f6e9db] to-soft-blue px-6 py-14 text-center sm:px-12">
             <h2 className="text-[30px] font-semibold tracking-[-0.025em] sm:text-[38px]">Start tomorrow morning feeling clear.</h2>
             <p className="mx-auto mt-3 max-w-xl text-[16px] text-subtle-foreground">Set up takes a couple of minutes. Or look around the demo first.</p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
