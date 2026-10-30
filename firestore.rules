@@ -67,11 +67,12 @@ service cloud.firestore {
     function validPlanning(p) {
       return p is map
         && p.keys().hasAll(['workStart', 'workEnd', 'wakeTime', 'sleepTime', 'focusBlockMinutes', 'breakMinutes', 'planWithin'])
-        && p.keys().hasOnly(['workStart', 'workEnd', 'wakeTime', 'sleepTime', 'focusBlockMinutes', 'breakMinutes', 'planWithin'])
+        && p.keys().hasOnly(['workStart', 'workEnd', 'wakeTime', 'sleepTime', 'focusBlockMinutes', 'breakMinutes', 'planWithin', 'workDays'])
         && optTime(p.workStart) && optTime(p.workEnd) && optTime(p.wakeTime) && optTime(p.sleepTime)
         && intIn(p.focusBlockMinutes, 25, 240)
         && intIn(p.breakMinutes, 0, 60)
-        && p.planWithin in ['work_hours', 'waking_hours'];
+        && (!('workDays' in p) || (p.workDays is list && p.workDays.size() <= 7 && p.workDays.hasOnly([0, 1, 2, 3, 4, 5, 6])))
+        && p.planWithin in ['outside_work', 'work_hours', 'waking_hours'];
     }
     function validProfile() {
       return exactKeys(['displayName', 'timezone', 'weekStartsOn', 'planning', 'aiConsent', 'onboardedAt', 'createdAt', 'updatedAt'])

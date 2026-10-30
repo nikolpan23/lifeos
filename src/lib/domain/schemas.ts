@@ -17,7 +17,18 @@ const base = {
   updatedAt: isoDateTime,
 };
 
-export const planningSchema = z
+/**
+ * Profiles saved before working days existed defaulted to planning inside working
+ * hours, which put personal tasks in the middle of the workday. They are read as
+ * Monday to Friday with working hours kept free, until preferences are saved again.
+ */
+function migratePlanning(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object" || "workDays" in raw) return raw;
+  const p = raw as Record<string, unknown>;
+  return { ...p, workDays: [1, 2, 3, 4, 5], planWithin: p.planWithin === "work_hours" ? "outside_work" : p.planWithin };
+}
+
+const planningObject = z
   .object({
     workStart: wallTime.nullable(),
     workEnd: wallTime.nullable(),
@@ -25,12 +36,15 @@ export const planningSchema = z
     sleepTime: wallTime.nullable(),
     focusBlockMinutes: z.number().int().min(25).max(240),
     breakMinutes: z.number().int().min(0).max(60),
-    planWithin: z.enum(["work_hours", "waking_hours"]),
+    workDays: z.array(z.number().int().min(0).max(6)).max(7),
+    planWithin: z.enum(["outside_work", "work_hours", "waking_hours"]),
   })
   .refine((p) => !p.workStart || !p.workEnd || p.workStart < p.workEnd, {
     message: "Working hours must end after they start",
     path: ["workEnd"],
   });
+
+export const planningSchema = z.preprocess(migratePlanning, planningObject);
 
 export const profileSchema = z.object({
   displayName: requiredText(60, "Name"),

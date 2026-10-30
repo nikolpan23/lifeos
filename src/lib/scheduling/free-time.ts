@@ -1,4 +1,4 @@
-import { addDays, endOfLocalDay, startOfLocalDay, wallTimeToMinutes, zonedToInstant, type LocalDate } from "@/lib/dates";
+import { addDays, endOfLocalDay, startOfLocalDay, wallTimeToMinutes, weekdayOf, zonedToInstant, type LocalDate, type WallTime } from "@/lib/dates";
 import { habitsDueOn } from "@/lib/domain/habits";
 import { DEFAULT_PLANNING, type CalendarEvent, type Habit, type PlanningPreferences } from "@/lib/domain/types";
 import { subtractIntervals, toInterval, totalMinutes, type Interval } from "./intervals";
@@ -24,6 +24,8 @@ export interface BusyBlock extends Interval {
 
 export interface DayAvailability {
   window: Interval | null;
+  /** Working hours kept free of tasks, when planning outside work on a work day. */
+  work: Interval | null;
   busy: BusyBlock[];
   free: Interval[];
   freeMinutes: number;
@@ -32,10 +34,31 @@ export interface DayAvailability {
   assumptions: string[];
 }
 
+function wallRange(date: LocalDate, timezone: string, startTime: WallTime, endTime: WallTime): Interval | null {
+  const start = zonedToInstant(date, startTime, timezone).getTime();
+  // Sleep times after midnight (e.g. 00:30) end the window at the next day's wall-clock time.
+  const end =
+    wallTimeToMinutes(endTime) <= wallTimeToMinutes(startTime)
+      ? zonedToInstant(addDays(date, 1), endTime, timezone).getTime()
+      : zonedToInstant(date, endTime, timezone).getTime();
+  return end > start ? { start, end } : null;
+}
+
+export function isWorkDay(date: LocalDate, planning: PlanningPreferences): boolean {
+  return planning.workDays.includes(weekdayOf(date));
+}
+
+/** Working hours on a work day, or null on days off and when no hours are set. */
+export function workHours(date: LocalDate, timezone: string, planning: PlanningPreferences): Interval | null {
+  if (!isWorkDay(date, planning) || !planning.workStart || !planning.workEnd) return null;
+  return wallRange(date, timezone, planning.workStart, planning.workEnd);
+}
+
 /** The planning window for a day, in instants. Handles DST because each edge is converted separately. */
-export function planningWindow(date: LocalDate, timezone: string, planning: PlanningPreferences): { window: Interval | null; assumptions: string[] } {
+export function planningWindow(date: LocalDate, timezone: string, planning: PlanningPreferences): { window: Interval | null; work: Interval | null; assumptions: string[] } {
   const assumptions: string[] = [];
-  const useWork = planning.planWithin === "work_hours";
+  // Days off have no working hours, so "inside working hours" falls back to the waking day.
+  const useWork = planning.planWithin === "work_hours" && isWorkDay(date, planning);
   let startTime = useWork ? planning.workStart : planning.wakeTime;
   let endTime = useWork ? planning.workEnd : planning.sleepTime;
   if (!startTime || !endTime) {
@@ -43,14 +66,9 @@ export function planningWindow(date: LocalDate, timezone: string, planning: Plan
     endTime = endTime ?? (useWork ? DEFAULT_PLANNING.workEnd : DEFAULT_PLANNING.sleepTime);
     assumptions.push(`No ${useWork ? "working hours" : "sleep schedule"} set, so ${startTime}–${endTime} was assumed.`);
   }
-  const start = zonedToInstant(date, startTime!, timezone).getTime();
-  // Sleep times after midnight (e.g. 00:30) end the window at the next day's wall-clock time.
-  const end =
-    wallTimeToMinutes(endTime!) <= wallTimeToMinutes(startTime!)
-      ? zonedToInstant(addDays(date, 1), endTime!, timezone).getTime()
-      : zonedToInstant(date, endTime!, timezone).getTime();
-  if (end <= start) return { window: null, assumptions };
-  return { window: { start, end }, assumptions };
+  const window = wallRange(date, timezone, startTime!, endTime!);
+  const work = planning.planWithin === "outside_work" && window ? workHours(date, timezone, planning) : null;
+  return { window, work, assumptions };
 }
 
 function roundUp(ms: number): number {
@@ -81,17 +99,17 @@ export function eventBlocksForDay(events: CalendarEvent[], date: LocalDate, time
 }
 
 export function dayAvailability(ctx: DayContext, options: { includeHabits?: boolean } = {}): DayAvailability {
-  const { window, assumptions } = planningWindow(ctx.date, ctx.timezone, ctx.planning);
+  const { window, work, assumptions } = planningWindow(ctx.date, ctx.timezone, ctx.planning);
   const { timed, allDay } = eventBlocksForDay(ctx.events, ctx.date, ctx.timezone);
   const busy: BusyBlock[] = [...timed, ...(options.includeHabits === false ? [] : habitBlocks(ctx.habits, ctx.date, ctx.timezone))];
-  if (!window) return { window: null, busy, free: [], freeMinutes: 0, allDayEvents: allDay, assumptions };
+  if (!window) return { window: null, work: null, busy, free: [], freeMinutes: 0, allDayEvents: allDay, assumptions };
 
   let effective = window;
   if (ctx.now) {
     const nowMs = roundUp(ctx.now.getTime());
-    if (nowMs >= window.end) return { window, busy, free: [], freeMinutes: 0, allDayEvents: allDay, assumptions };
+    if (nowMs >= window.end) return { window, work, busy, free: [], freeMinutes: 0, allDayEvents: allDay, assumptions };
     if (nowMs > window.start) effective = { start: nowMs, end: window.end };
   }
-  const free = subtractIntervals(effective, busy).filter((f) => f.end - f.start >= MIN_SLOT_MINUTES * 60_000);
-  return { window, busy, free, freeMinutes: totalMinutes(free), allDayEvents: allDay, assumptions };
+  const free = subtractIntervals(effective, work ? [...busy, work] : busy).filter((f) => f.end - f.start >= MIN_SLOT_MINUTES * 60_000);
+  return { window, work, busy, free, freeMinutes: totalMinutes(free), allDayEvents: allDay, assumptions };
 }

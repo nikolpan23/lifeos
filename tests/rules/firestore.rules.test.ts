@@ -50,6 +50,8 @@ describe("profile", () => {
     await assertFails(setDoc(doc(alice(), "users/alice"), { ...data.profile, isAdmin: true }));
     await assertFails(setDoc(doc(alice(), "users/alice"), { ...data.profile, weekStartsOn: 3 }));
     await assertFails(setDoc(doc(alice(), "users/alice"), { ...data.profile, displayName: "" }));
+    await assertFails(setDoc(doc(alice(), "users/alice"), { ...data.profile, planning: { ...data.profile.planning, workDays: [7] } }));
+    await assertFails(setDoc(doc(alice(), "users/alice"), { ...data.profile, planning: { ...data.profile.planning, planWithin: "anytime" } }));
   });
   it("does not let clients delete the profile", async () => {
     await assertSucceeds(setDoc(doc(alice(), "users/alice"), data.profile));

@@ -1,4 +1,4 @@
-import { compareLocal, diffDays, durationLabel, formatLocalDate, zonedToInstant, type LocalDate } from "@/lib/dates";
+import { compareLocal, diffDays, durationLabel, formatLocalDate, formatTimeRange, zonedToInstant, type LocalDate } from "@/lib/dates";
 import { PRIORITY_WEIGHT } from "@/lib/domain/tasks";
 import type { CalendarEvent, Goal, Habit, PlanItem, PlanningPreferences, Task } from "@/lib/domain/types";
 import { dayAvailability, type BusyBlock } from "./free-time";
@@ -104,6 +104,7 @@ const MIN = 60_000;
 export function buildPlan(input: PlannerInput, order?: { taskIds: string[]; reasons?: Record<string, string> }): PlanResult {
   const availability = dayAvailability({ date: input.date, timezone: input.timezone, planning: input.planning, events: input.events, habits: input.habits, now: input.now });
   const notes = [...availability.assumptions];
+  if (availability.work) notes.push(`Your working hours (${formatTimeRange(new Date(availability.work.start), new Date(availability.work.end), input.timezone)}) were kept free of tasks.`);
   const ranked = rankCandidates(input);
   const byId = new Map(ranked.map((c) => [c.task.id, c]));
 

@@ -18,7 +18,7 @@ import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, Dia
 import { CATEGORY_STYLES } from "@/components/shared/category";
 import { useAccount } from "@/components/layout/account-context";
 import { useActions, useLife, useMode } from "@/lib/data/store";
-import { COMMON_TIME_ZONES, isValidTimeZone, isWallTime } from "@/lib/dates";
+import { COMMON_TIME_ZONES, isValidTimeZone, isWallTime, WEEKDAY_LABELS } from "@/lib/dates";
 import { CATEGORY_COLORS, type Category, type CategoryColor } from "@/lib/domain/types";
 import { exportLifeData } from "@/lib/data/export";
 import { resetDemoData } from "@/lib/data/demo-backend";
@@ -38,7 +38,8 @@ const settingsForm = z
     sleepTime: optTime,
     focusBlockMinutes: z.string().refine((v) => /^\d+$/.test(v) && +v >= 25 && +v <= 240, "Between 25 and 240 minutes"),
     breakMinutes: z.string().refine((v) => /^\d+$/.test(v) && +v >= 0 && +v <= 60, "Between 0 and 60 minutes"),
-    planWithin: z.enum(["work_hours", "waking_hours"]),
+    workDays: z.array(z.number().int().min(0).max(6)),
+    planWithin: z.enum(["outside_work", "work_hours", "waking_hours"]),
   })
   .refine((v) => !v.workStart || !v.workEnd || v.workStart < v.workEnd, { message: "Must be after the start", path: ["workEnd"] });
 type SettingsValues = z.infer<typeof settingsForm>;
@@ -95,11 +96,15 @@ export function SettingsView() {
     sleepTime: profile.planning.sleepTime ?? "",
     focusBlockMinutes: String(profile.planning.focusBlockMinutes),
     breakMinutes: String(profile.planning.breakMinutes),
+    workDays: profile.planning.workDays,
     planWithin: profile.planning.planWithin,
   });
-  const { register, handleSubmit, formState, reset } = useForm<SettingsValues>({ resolver: zodResolver(settingsForm), defaultValues: defaults() });
+  const { register, handleSubmit, formState, reset, setValue, watch } = useForm<SettingsValues>({ resolver: zodResolver(settingsForm), defaultValues: defaults() });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => reset(defaults()), [profile.updatedAt]);
+
+  const workDays = watch("workDays");
+  const weekOrder = Array.from({ length: 7 }, (_, i) => (profile.weekStartsOn + i) % 7);
 
   const onSubmit = handleSubmit(async (v) => {
     await actions.updateProfile({
@@ -113,6 +118,7 @@ export function SettingsView() {
         sleepTime: v.sleepTime || null,
         focusBlockMinutes: Number(v.focusBlockMinutes),
         breakMinutes: Number(v.breakMinutes),
+        workDays: [...v.workDays].sort((a, b) => a - b),
         planWithin: v.planWithin,
       },
     });
@@ -168,7 +174,7 @@ export function SettingsView() {
             <CardHeader>
               <div>
                 <CardTitle>Planning preferences</CardTitle>
-                <CardDescription>The daily planner only suggests work inside these hours.</CardDescription>
+                <CardDescription>Plan My Day uses these to decide when tasks can go on your calendar.</CardDescription>
               </div>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -178,6 +184,25 @@ export function SettingsView() {
               <Field id="set-we" label="Work ends" optional error={formState.errors.workEnd?.message}>
                 <Input type="time" {...register("workEnd")} />
               </Field>
+              <fieldset className="sm:col-span-2">
+                <legend className="mb-1.5 text-[13px] font-medium text-subtle-foreground">Working days</legend>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Working days">
+                  {weekOrder.map((d) => {
+                    const on = workDays.includes(d);
+                    return (
+                      <button
+                        key={d}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => setValue("workDays", on ? workDays.filter((x) => x !== d) : [...workDays, d], { shouldDirty: true })}
+                        className={cn("h-9 min-w-11 rounded-full border px-2 text-[13px] font-medium transition-colors", on ? "border-primary bg-primary text-white" : "border-border text-subtle-foreground hover:bg-[#f5eee1]")}
+                      >
+                        {WEEKDAY_LABELS[d]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
               <Field id="set-wake" label="Usually wake up" optional error={formState.errors.wakeTime?.message}>
                 <Input type="time" {...register("wakeTime")} />
               </Field>
@@ -186,8 +211,9 @@ export function SettingsView() {
               </Field>
               <Field id="set-within" label="Plan tasks within">
                 <NativeSelect {...register("planWithin")}>
-                  <option value="work_hours">Working hours</option>
-                  <option value="waking_hours">Waking hours</option>
+                  <option value="outside_work">Outside working hours</option>
+                  <option value="work_hours">Working hours only</option>
+                  <option value="waking_hours">{"Any time I'm awake"}</option>
                 </NativeSelect>
               </Field>
               <div className="grid grid-cols-2 gap-3">
