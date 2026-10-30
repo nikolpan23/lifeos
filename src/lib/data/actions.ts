@@ -39,7 +39,8 @@ import type {
 import { newId, nowISO } from "./ids";
 import type { Op } from "./ops";
 
-export type ApplyFn = (ops: Op[], options?: { success?: string; error?: string }) => Promise<boolean>;
+export type ApplyOptions = { success?: string; error?: string; undoable?: boolean };
+export type ApplyFn = (ops: Op[], options?: ApplyOptions) => Promise<boolean>;
 
 export class ValidationError extends Error {}
 
@@ -142,7 +143,7 @@ export function createActions(apply: ApplyFn, get: () => LifeData) {
       const data = get();
       const ops: Op[] = [{ type: "delete", collection: "tasks", id }];
       for (const n of data.notes) if (n.taskId === id) ops.push(patchOp("notes", n.id, { taskId: null }));
-      return apply(ops, { success: "Task deleted" });
+      return apply(ops, { success: "Task deleted", undoable: true });
     },
 
     /* ------------------------------- Habits ------------------------------- */
@@ -290,7 +291,7 @@ export function createActions(apply: ApplyFn, get: () => LifeData) {
       );
     },
     async deleteEvent(id: string) {
-      return apply([{ type: "delete", collection: "events", id }], { success: "Event deleted" });
+      return apply([{ type: "delete", collection: "events", id }], { success: "Event deleted", undoable: true });
     },
 
     /* ----------------------------- Daily plans ---------------------------- */

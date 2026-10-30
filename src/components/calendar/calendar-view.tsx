@@ -8,7 +8,7 @@ import { Calendar, dateFnsLocalizer, type View, type SlotInfo, type EventProps }
 import { format, getDay, startOfWeek as dfStartOfWeek } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { TZDate } from "@date-fns/tz";
-import { AlertTriangle, CalendarPlus, CheckCircle2, ChevronLeft, ChevronRight, MapPin, Sparkles } from "lucide-react";
+import { AlertTriangle, CalendarPlus, CheckCircle2, ChevronLeft, ChevronRight, MapPin, Sparkles, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,7 +17,7 @@ import { CategoryDot, categoryStyle } from "@/components/shared/category";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useComposer } from "@/components/layout/composer";
 import { PlanDialog } from "@/components/planner/plan-dialog";
-import { useLife, useNow, useToday } from "@/lib/data/store";
+import { useActions, useLife, useNow, useToday } from "@/lib/data/store";
 import { addDays, formatLongDate, formatTime, isLocalDate, localDateOf, type LocalDate } from "@/lib/dates";
 import { findOverlappingPairs } from "@/lib/scheduling/conflicts";
 import type { CalendarEvent, Task } from "@/lib/domain/types";
@@ -52,6 +52,7 @@ export function CalendarView() {
   const params = useSearchParams();
   const router = useRouter();
   const composer = useComposer();
+  const actions = useActions();
   const tz = useLife((d) => d.profile.timezone);
   const weekStartsOn = useLife((d) => d.profile.weekStartsOn);
   const events = useLife((d) => d.events);
@@ -289,8 +290,8 @@ export function CalendarView() {
             ) : (
               <ol className="grid gap-1">
                 {agenda.timed.map((e) => (
-                  <li key={e.id}>
-                    <button type="button" onClick={() => composer.openEvent(e)} className="flex w-full items-start gap-2.5 rounded-[10px] px-2 py-2 text-left hover:bg-[#f6efe2]">
+                  <li key={e.id} className="group relative">
+                    <button type="button" onClick={() => composer.openEvent(e)} className="flex w-full items-start gap-2.5 rounded-[10px] py-2 pr-9 pl-2 text-left hover:bg-[#f6efe2]">
                       <CategoryDot category={categories.find((c) => c.id === e.categoryId)} className="mt-1.5" />
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-1.5 text-[13.5px] font-medium">
@@ -311,6 +312,16 @@ export function CalendarView() {
                         )}
                       </span>
                     </button>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={`Delete “${e.title}”`}
+                      title="Delete event"
+                      onClick={() => actions.deleteEvent(e.id)}
+                      className="absolute top-1.5 right-1 text-muted-foreground hover:bg-soft-rose hover:text-danger sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+                    >
+                      <Trash2 />
+                    </Button>
                   </li>
                 ))}
               </ol>
