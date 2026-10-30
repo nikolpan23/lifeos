@@ -5,7 +5,7 @@ import { createStore, useStore, type StoreApi } from "zustand";
 import { toast } from "sonner";
 import type { LifeData } from "@/lib/domain/types";
 import { todayIn } from "@/lib/dates";
-import { createActions, ValidationError, type LifeActions } from "./actions";
+import { createActions, ValidationError, type ApplyOptions, type LifeActions } from "./actions";
 import type { DataMode, LifeBackend } from "./backend";
 import { applyOps, inverseOps, type Op } from "./ops";
 
@@ -21,7 +21,7 @@ export interface LifeState {
   data: LifeData | null;
   saving: number;
   lastSavedAt: number | null;
-  apply: (ops: Op[], options?: { success?: string; error?: string }) => Promise<boolean>;
+  apply: (ops: Op[], options?: ApplyOptions) => Promise<boolean>;
 }
 
 function friendlyError(err: unknown): string {
@@ -49,7 +49,11 @@ function createLifeStore(backend: LifeBackend): StoreApi<LifeState> {
       try {
         await backend.commit(ops, get().data!);
         set((s) => ({ saving: s.saving - 1, lastSavedAt: Date.now() }));
-        if (options?.success) toast.success(options.success);
+        if (options?.success && options.undoable) {
+          // Undo restores exactly what these ops changed, as a fresh save.
+          const undo = inverseOps(before, ops);
+          toast.success(options.success, { action: { label: "Undo", onClick: () => void get().apply(undo, { success: "Restored" }) } });
+        } else if (options?.success) toast.success(options.success);
         return true;
       } catch (err) {
         const current = get().data;

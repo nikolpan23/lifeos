@@ -161,7 +161,7 @@ export function EventDialog({ open, onOpenChange, event, preset }: { open: boole
           <DialogFooter className="sm:justify-between">
             {event ? (
               <Button variant="ghost" className="text-danger hover:bg-soft-rose hover:text-danger" onClick={onDelete}>
-                <Trash2 /> Delete
+                <Trash2 /> Delete event
               </Button>
             ) : (
               <span />

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
@@ -55,6 +56,11 @@ export function TaskDialog({ open, onOpenChange, task, preset }: { open: boolean
       else throw err;
     }
   });
+
+  const onDelete = async () => {
+    if (!task) return;
+    if (await actions.deleteTask(task.id)) onOpenChange(false);
+  };
 
   const activeGoals = goals.filter((g) => g.status === "active" || g.id === task?.goalId);
 
@@ -130,13 +136,22 @@ export function TaskDialog({ open, onOpenChange, task, preset }: { open: boolean
               </p>
             )}
           </DialogBody>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={formState.isSubmitting}>
-              {task ? "Save changes" : "Add task"}
-            </Button>
+          <DialogFooter className="sm:justify-between">
+            {task ? (
+              <Button variant="ghost" className="text-danger hover:bg-soft-rose hover:text-danger" onClick={onDelete}>
+                <Trash2 /> Delete task
+              </Button>
+            ) : (
+              <span />
+            )}
+            <div className="flex flex-col-reverse gap-2 sm:flex-row">
+              <Button variant="ghost" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={formState.isSubmitting}>
+                {task ? "Save changes" : "Add task"}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
