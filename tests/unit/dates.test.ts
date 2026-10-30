@@ -48,7 +48,7 @@ describe("time zones", () => {
     expect((end - start) / 3_600_000).toBe(25);
   });
   it("counts free time correctly on a DST day", () => {
-    const planning = { ...DEFAULT_PLANNING, workStart: "00:30", workEnd: "05:30" };
+    const planning = { ...DEFAULT_PLANNING, workStart: "00:30", workEnd: "05:30", workDays: [0], planWithin: "work_hours" as const };
     const a = dayAvailability({ date: "2026-10-25", timezone: "Europe/Athens", planning, events: [], habits: [] });
     expect(a.freeMinutes).toBe(6 * 60); // 5 wall-clock hours plus the repeated hour
   });

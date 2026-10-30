@@ -19,8 +19,14 @@ export interface PlanningPreferences {
   /** Longest uninterrupted focus block the planner should suggest. */
   focusBlockMinutes: number;
   breakMinutes: number;
-  /** Plan inside working hours only, or anywhere between waking and sleeping. */
-  planWithin: "work_hours" | "waking_hours";
+  /** Days of the week (0 = Sunday) that have working hours. */
+  workDays: number[];
+  /**
+   * Where the planner may put tasks: outside working hours (personal time between
+   * waking and sleeping, with working hours blocked on work days), inside working
+   * hours only, or anywhere between waking and sleeping.
+   */
+  planWithin: "outside_work" | "work_hours" | "waking_hours";
 }
 
 export interface Profile {
@@ -241,5 +247,6 @@ export const DEFAULT_PLANNING: PlanningPreferences = {
   sleepTime: "23:00",
   focusBlockMinutes: 90,
   breakMinutes: 15,
-  planWithin: "work_hours",
+  workDays: [1, 2, 3, 4, 5],
+  planWithin: "outside_work",
 };

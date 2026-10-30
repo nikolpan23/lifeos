@@ -4,6 +4,7 @@ import { dayAvailability } from "@/lib/scheduling/free-time";
 import { createDemoData } from "@/lib/data/demo-seed";
 import { DEFAULT_PLANNING, type CalendarEvent, type Task } from "@/lib/domain/types";
 import { zonedToISO } from "@/lib/dates";
+import { planningSchema } from "@/lib/domain/schemas";
 
 const tz = "Europe/Athens";
 const today = "2026-10-26";
@@ -29,7 +30,7 @@ describe("rule-based planner", () => {
   it("never places tasks over events, habits or each other", () => {
     const events = [event("standup", "09:30", "09:45"), event("lunch", "12:30", "13:30"), event("call", "15:00", "15:30")];
     const tasks = [task("a", { estimateMinutes: 120, priority: "high" }), task("b", { estimateMinutes: 45 }), task("c", { estimateMinutes: 30 }), task("d", { estimateMinutes: 200 })];
-    const plan = buildPlan(input({ events, tasks }));
+    const plan = buildPlan(input({ events, tasks, planning: { ...DEFAULT_PLANNING, planWithin: "work_hours" } }));
     expect(planIsValid(plan.items)).toBe(true);
     const placed = plan.items.filter((i) => i.kind === "task");
     expect(placed.length).toBeGreaterThan(0);
@@ -77,5 +78,33 @@ describe("rule-based planner", () => {
     const busy = dayAvailability({ date: today, timezone: tz, planning: DEFAULT_PLANNING, events: data.events, habits: data.habits }).busy;
     for (const p of plan.items.filter((i) => i.kind === "task"))
       for (const b of busy) expect(new Date(p.start).getTime() < b.end && b.start < new Date(p.end).getTime()).toBe(false);
+  });
+
+  it("keeps working hours free on work days by default", () => {
+    // Friday 30 October, as reported: work 09:00–17:00, asked to plan at 10:12.
+    const friday = "2026-10-30";
+    const planning = { ...DEFAULT_PLANNING, workStart: "09:00", workEnd: "17:00" };
+    const tasks = [task("gym", { dueDate: friday, dueTime: "19:10", estimateMinutes: null }), task("shopping", { dueDate: "2026-10-31", estimateMinutes: null })];
+    const plan = buildPlan(input({ date: friday, planning, tasks, now: new Date(zonedToISO(friday, "10:12", tz)) }));
+    const placed = plan.items.filter((i) => i.kind === "task");
+    expect(placed.map((p) => p.refId).sort()).toEqual(["gym", "shopping"]);
+    for (const p of placed) expect(overlaps(p, { start: zonedToISO(friday, "09:00", tz), end: zonedToISO(friday, "17:00", tz) })).toBe(false);
+    expect(placed[0].start).toBe(zonedToISO(friday, "17:00", tz));
+    expect(plan.notes.some((n) => n.includes("working hours"))).toBe(true);
+  });
+
+  it("plans across the whole waking day on days off", () => {
+    const saturday = "2026-10-31";
+    const planning = { ...DEFAULT_PLANNING, workStart: "09:00", workEnd: "17:00" };
+    const plan = buildPlan(input({ date: saturday, planning, tasks: [task("a", { dueDate: saturday })], now: new Date(zonedToISO(saturday, "10:00", tz)) }));
+    expect(plan.items.find((i) => i.kind === "task")?.start).toBe(zonedToISO(saturday, "10:00", tz));
+  });
+
+  it("reads older profiles as Monday to Friday with working hours kept free", () => {
+    const old = { workStart: "09:00", workEnd: "17:00", wakeTime: "07:00", sleepTime: "23:00", focusBlockMinutes: 90, breakMinutes: 15, planWithin: "work_hours" };
+    const parsed = planningSchema.parse(old);
+    expect(parsed.workDays).toEqual([1, 2, 3, 4, 5]);
+    expect(parsed.planWithin).toBe("outside_work");
+    expect(planningSchema.parse({ ...old, workDays: [1, 2, 3, 4, 5] }).planWithin).toBe("work_hours");
   });
 });

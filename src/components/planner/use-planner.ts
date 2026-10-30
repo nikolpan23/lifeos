@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useAccount } from "@/components/layout/account-context";
 import { useLife, useMode } from "@/lib/data/store";
 import { wallTimeOf, type LocalDate } from "@/lib/dates";
+import { workHours } from "@/lib/scheduling/free-time";
 import { buildPlan, type PlanResult } from "@/lib/scheduling/planner";
 import type { PlanRequest, PlanResponse } from "@/lib/ai/plan-contract";
 
@@ -52,6 +53,9 @@ export function usePlanner() {
       try {
         const goals = new Map(data.goals.map((g) => [g.id, g.title]));
         const tz = data.profile.timezone;
+        // Working hours are off-limits too, so the model knows the day's real shape.
+        const work = data.profile.planning.planWithin === "outside_work" ? workHours(date, tz, data.profile.planning) : null;
+        const workCommitment = work ? [{ title: "Working hours", start: wallTimeOf(new Date(work.start), tz), end: wallTimeOf(new Date(work.end), tz), kind: "event" as const }] : [];
         const body: PlanRequest = {
           date,
           timezone: tz,
@@ -66,10 +70,13 @@ export function usePlanner() {
             goal: c.task.goalId ? (goals.get(c.task.goalId) ?? null) : null,
             ruleReason: c.reason.slice(0, 300),
           })),
-          commitments: base.items
-            .filter((i) => i.kind === "event" || i.kind === "habit")
-            .slice(0, 40)
-            .map((i) => ({ title: i.title.slice(0, 160), start: wallTimeOf(i.start, tz), end: wallTimeOf(i.end, tz), kind: i.kind as "event" | "habit" })),
+          commitments: [
+            ...workCommitment,
+            ...base.items
+              .filter((i) => i.kind === "event" || i.kind === "habit")
+              .slice(0, 40 - workCommitment.length)
+              .map((i) => ({ title: i.title.slice(0, 160), start: wallTimeOf(i.start, tz), end: wallTimeOf(i.end, tz), kind: i.kind as "event" | "habit" })),
+          ],
         };
         const res = await fetch("/api/ai/plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         const json = (await res.json()) as PlanResponse;
